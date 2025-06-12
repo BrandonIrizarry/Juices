@@ -9,7 +9,10 @@
   <body>
     <section>
       <h1>Green Barrel</h1>
-      <button>Add Date</button>
+      <button hx-get="/date" hx-target="next">Add Date</button>
+      <div>
+      </div>
     </section>
   </body>
+  <script src="/js/htmx.min.js"></script>
 </html>

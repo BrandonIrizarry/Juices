@@ -19,6 +19,10 @@ func main() {
 	mux.Handle("GET /js/", loadJS)
 	mux.Handle("GET /app/", serveMainPage)
 
+	// Endpoints (each handler is defined in its own file inside
+	// the main package.
+	mux.HandleFunc("GET /date", getDate)
+
 	srv := &http.Server{
 		Addr:    ":8080",
 		Handler: mux,
