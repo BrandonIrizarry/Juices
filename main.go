@@ -15,6 +15,7 @@ func main() {
 	// Serve page as a static asset.
 	serveMainPage := http.StripPrefix("/app/", http.FileServer(http.Dir("./app")))
 
+	// Static stuff.
 	mux.Handle("GET /js/", loadJS)
 	mux.Handle("GET /app/", serveMainPage)
 
