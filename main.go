@@ -11,7 +11,12 @@ func main() {
 
 	// For now, we need this primarily to load HTMX.
 	loadJS := http.StripPrefix("/js/", http.FileServer(http.Dir("./js")))
+
+	// Serve page as a static asset.
+	serveMainPage := http.StripPrefix("/app/", http.FileServer(http.Dir("./app")))
+
 	mux.Handle("GET /js/", loadJS)
+	mux.Handle("GET /app/", serveMainPage)
 
 	srv := &http.Server{
 		Addr:    ":8080",
