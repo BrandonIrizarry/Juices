@@ -3,12 +3,22 @@ h1 {
 }
 
 section {
-    margin-left: 20px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-left: 10px;
 }
 
 section > * {
     margin-top: 10px;
+}
+
+.entry {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+}
+
+.entry > input[type="number"] {
+    width: 50px;
 }

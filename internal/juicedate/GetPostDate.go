@@ -12,7 +12,7 @@ var getDateHTML = strings.TrimSpace(`
 `)
 
 var postDateHTML = strings.TrimSpace(`
-<div>
+<div class="entry">
 <span>%s</span>
 <button id="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">Edit</button>
 <input type="number" id="count" name="count" min=0 />
