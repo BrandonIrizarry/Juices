@@ -18,6 +18,6 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 
 	date := r.FormValue("date")
-	postDateHTML = fmt.Sprintf(postDateHTML, date)
-	w.Write([]byte(postDateHTML))
+
+	w.Write([]byte(fmt.Sprintf(postDateHTML, date)))
 }
