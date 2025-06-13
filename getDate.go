@@ -7,7 +7,7 @@ import (
 )
 
 var getDateHTML = strings.TrimSpace(`
-<input type="date" hx-post="/date" hx-swap="outerHTML"/>
+<input type="date" name="date" hx-post="/date" hx-swap="outerHTML"/>
 `)
 
 func getDate(w http.ResponseWriter, r *http.Request) {

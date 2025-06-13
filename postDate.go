@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
 )
 
 var postDateHTML = strings.TrimSpace(`
-<span>Got date.</span>
+<span>%s</span>
 <button hx-get="/date" hx-swap="outerHTML">Add Date</button>
 `)
 
@@ -16,5 +17,7 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
+	date := r.FormValue("date")
+	postDateHTML = fmt.Sprintf(postDateHTML, date)
 	w.Write([]byte(postDateHTML))
 }
