@@ -27,6 +27,7 @@ var hxTriggerName string
 
 var countElementID = 0
 
+// GetDate serves the HTML5 date widget to the page.
 func GetDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
@@ -50,6 +51,9 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// PostDate serves a row consisting of the selected date, an HTML5
+// counter widget, and a Delete button. If this is an Add Date
+// operation, another Add Date button is appended to the served HTML.
 func PostDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
