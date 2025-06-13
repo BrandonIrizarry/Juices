@@ -25,6 +25,7 @@ func main() {
 	// the main package.
 	mux.HandleFunc("GET /date", juicedate.GetDate)
 	mux.HandleFunc("POST /date", juicedate.PostDate)
+	mux.HandleFunc("DELETE /date", deleteDate)
 
 	srv := &http.Server{
 		Addr:    ":8080",
