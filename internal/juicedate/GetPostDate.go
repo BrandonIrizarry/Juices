@@ -14,7 +14,7 @@ var getDateHTML = strings.TrimSpace(`
 var postDateHTML = strings.TrimSpace(`
 <div class="entry">
 <span name="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
-<input type="number" name="count" hx-post="/count" hx-trigger="change delay:1s" min=0 />
+<input type="number" name="count-%[1]s" hx-post="/count" hx-trigger="change delay:1s" min=0 />
 <button id="delete" hx-delete="/date" hx-swap="delete" hx-target="closest div">Delete</button>
 </div>
 %s`)
