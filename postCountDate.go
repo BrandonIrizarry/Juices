@@ -6,7 +6,9 @@ import (
 	"strconv"
 )
 
-func postCount(w http.ResponseWriter, r *http.Request) {
+var datesToCounts = make(map[string]int)
+
+func postCountDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
 	count, err := strconv.Atoi(r.FormValue("count"))
@@ -17,4 +19,10 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("Got count: %d\n", count)
+
+	date := r.PathValue("date")
+
+	datesToCounts[date] = count
+
+	log.Printf("Current counts: %v\n", datesToCounts)
 }
