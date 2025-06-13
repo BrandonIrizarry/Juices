@@ -13,26 +13,26 @@ var getDateHTML = strings.TrimSpace(`
 
 var postDateHTML = strings.TrimSpace(`
 <div class="entry">
-<span id="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
-<input type="number" id="count" name="count" min=0 />
+<span name="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
+<input type="number" name="count" min=0 />
 <button id="delete" hx-delete="/date" hx-swap="delete" hx-target="closest div">Delete</button>
 </div>
 %s`)
 
 var addDateButton = strings.TrimSpace(`
-<button id="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>
+<button name="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>
 `)
 
-var hxTrigger string
+var hxTriggerName string
 
 func GetDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
 	w.Header().Set("Content-Type", "text/html")
 
-	hxTrigger = r.Header.Get("Hx-Trigger")
+	hxTriggerName = r.Header.Get("Hx-Trigger-Name")
 
-	log.Printf("Element: %s\n", hxTrigger)
+	log.Printf("Element: %s\n", hxTriggerName)
 
 	_, err := w.Write([]byte(getDateHTML))
 
@@ -63,12 +63,12 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 }
 
 func computeDateFinalHTML(date string) (string, error) {
-	switch hxTrigger {
+	switch hxTriggerName {
 	case "edit":
 		return fmt.Sprintf(postDateHTML, date, ""), nil
 	case "add":
 		return fmt.Sprintf(postDateHTML, date, addDateButton), nil
 	default:
-		return "", fmt.Errorf("Invalid HX trigger: %s", hxTrigger)
+		return "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
 	}
 }
