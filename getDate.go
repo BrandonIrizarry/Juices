@@ -15,7 +15,6 @@ func getDate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	log.Println(r)
 	log.Printf("Element: %s\n", r.Header.Get("Hx-Trigger"))
 
 	_, err := w.Write([]byte(getDateHTML))
