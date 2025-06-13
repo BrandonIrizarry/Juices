@@ -63,7 +63,17 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	date := strings.SplitN(r.FormValue("date"), "-", 2)[1]
+	submittedDate := r.FormValue("date")
+	parts := strings.SplitN(submittedDate, "-", 2)
+
+	if len(parts) != 2 {
+		message := fmt.Sprintf("Invalid date: %s", submittedDate)
+		log.Println(message)
+		http.Error(w, message, http.StatusInternalServerError)
+		return
+	}
+
+	date := parts[1]
 
 	finalHTML, err := computeDateFinalHTML(date)
 
