@@ -10,9 +10,9 @@ import (
 var postDateHTML = strings.TrimSpace(`
 <div>
 <span>%s</span>
-<button hx-get="/date" hx-swap="outerHTML" hx-target="closest div">Edit</span>
+<button id="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">Edit</span>
 </div>
-<button hx-get="/date" hx-swap="outerHTML">Add Date</button>
+<button id="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>
 `)
 
 func postDate(w http.ResponseWriter, r *http.Request) {
