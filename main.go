@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/BrandonIrizarry/juices/internal/juicedate"
 )
 
 func main() {
@@ -21,8 +23,8 @@ func main() {
 
 	// Endpoints (each handler is defined in its own file inside
 	// the main package.
-	mux.HandleFunc("GET /date", getDate)
-	mux.HandleFunc("POST /date", postDate)
+	mux.HandleFunc("GET /date", juicedate.GetDate)
+	mux.HandleFunc("POST /date", juicedate.PostDate)
 
 	srv := &http.Server{
 		Addr:    ":8080",

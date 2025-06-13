@@ -1,4 +1,4 @@
-package main
+package juicedate
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ var addDateButton = strings.TrimSpace(`
 
 var hxTrigger string
 
-func getDate(w http.ResponseWriter, r *http.Request) {
+func GetDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
 	w.Header().Set("Content-Type", "text/html")
@@ -40,7 +40,7 @@ func getDate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func postDate(w http.ResponseWriter, r *http.Request) {
+func PostDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
 	w.Header().Set("Content-Type", "text/html")
