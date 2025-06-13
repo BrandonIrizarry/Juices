@@ -8,7 +8,6 @@ import (
 
 var html = strings.TrimSpace(`
 <input type="date"/>
-<button hx-get="/date">Add Date</button>
 `)
 
 func getDate(w http.ResponseWriter, r *http.Request) {
