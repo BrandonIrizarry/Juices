@@ -34,7 +34,14 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 
 	hxTriggerName = r.Header.Get("Hx-Trigger-Name")
 
-	log.Printf("Element: %s\n", hxTriggerName)
+	log.Printf("ID of triggering element (add/edit): %s\n", hxTriggerName)
+
+	if hxTriggerName != "add" && hxTriggerName != "edit" {
+		message := fmt.Sprintf("Unexpected trigger element: %s", hxTriggerName)
+		log.Println(message)
+		http.Error(w, message, http.StatusInternalServerError)
+		return
+	}
 
 	_, err := w.Write([]byte(getDateHTML))
 
