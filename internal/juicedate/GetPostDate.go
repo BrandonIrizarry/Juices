@@ -14,7 +14,7 @@ var getDateHTML = strings.TrimSpace(`
 var postDateHTML = strings.TrimSpace(`
 <div>
 <span>%s</span>
-<button id="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">Edit</span>
+<button id="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">Edit</button>
 </div>
 %s`)
 
