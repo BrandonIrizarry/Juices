@@ -8,7 +8,10 @@ import (
 )
 
 var postDateHTML = strings.TrimSpace(`
+<div>
 <span>%s</span>
+<button hx-get="/date" hx-swap="outerHTML" hx-target="closest div">Edit</span>
+</div>
 <button hx-get="/date" hx-swap="outerHTML">Add Date</button>
 `)
 
