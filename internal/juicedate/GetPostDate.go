@@ -23,9 +23,13 @@ var addDateButton = strings.TrimSpace(`
 <button name="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>
 `)
 
+// The name of the widget requesting GET /date (could be "add" or "edit".)
 var hxTriggerName string
 
-var countElementID = 0
+// The index appended to the computed ID of a counter widget (input
+// type=number.) This is used to enforce unique HTML id attribute
+// values among the counter widgets themselves.
+var countElementIndex = 0
 
 // GetDate serves the HTML5 date widget to the page.
 func GetDate(w http.ResponseWriter, r *http.Request) {
@@ -78,11 +82,11 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 func computeDateFinalHTML(date string) (string, error) {
 	switch hxTriggerName {
 	case "edit":
-		countElementID++
-		return fmt.Sprintf(postDateHTML, date, countElementID, ""), nil
+		countElementIndex++
+		return fmt.Sprintf(postDateHTML, date, countElementIndex, ""), nil
 	case "add":
-		countElementID++
-		return fmt.Sprintf(postDateHTML, date, countElementID, addDateButton), nil
+		countElementIndex++
+		return fmt.Sprintf(postDateHTML, date, countElementIndex, addDateButton), nil
 	default:
 		return "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
 	}
