@@ -22,5 +22,9 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 
 	date := strings.SplitN(r.FormValue("date"), "-", 2)[1]
 
-	w.Write([]byte(fmt.Sprintf(postDateHTML, date)))
+	_, err := w.Write([]byte(fmt.Sprintf(postDateHTML, date)))
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

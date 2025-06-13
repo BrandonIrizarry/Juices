@@ -15,5 +15,9 @@ func getDate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	w.Write([]byte(getDateHTML))
+	_, err := w.Write([]byte(getDateHTML))
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
