@@ -39,6 +39,13 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 
 	hxTriggerName = r.Header.Get("Hx-Trigger-Name")
 
+	if hxTriggerName == "" {
+		message := "This hypermedia element requires a name attribute"
+		log.Println(message)
+		http.Error(w, message, http.StatusInternalServerError)
+		return
+	}
+
 	log.Printf("ID of triggering element (add/edit): %s\n", hxTriggerName)
 
 	if hxTriggerName != "add" && hxTriggerName != "edit" {

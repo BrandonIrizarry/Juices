@@ -25,6 +25,12 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 	// counts under each date later.)
 	id := r.Header.Get("Hx-Trigger")
 
+	if id == "" {
+		message := "This hypermedia element requires an id attribute"
+		log.Println(message)
+		http.Error(w, message, http.StatusInternalServerError)
+	}
+
 	idsToCounts[id] = count
 
 	log.Printf("Current counts: %v\n", idsToCounts)
