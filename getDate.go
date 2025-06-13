@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-var html = strings.TrimSpace(`
-<input type="date"/>
+var getDateHTML = strings.TrimSpace(`
+<input type="date" hx-post="/date" hx-swap="outerHTML"/>
 `)
 
 func getDate(w http.ResponseWriter, r *http.Request) {
@@ -15,5 +15,5 @@ func getDate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	w.Write([]byte(html))
+	w.Write([]byte(getDateHTML))
 }
