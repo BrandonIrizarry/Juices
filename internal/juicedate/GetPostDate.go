@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/BrandonIrizarry/juices/internal/juicecount"
 )
 
 var getDateHTML = strings.TrimSpace(`
@@ -14,7 +16,7 @@ var getDateHTML = strings.TrimSpace(`
 var postDateHTML = strings.TrimSpace(`
 <div class="entry">
 <span name="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
-<input type="number" name="count" hx-post="/count" hx-trigger="change delay:1s" min=0 id="%[1]s-%d" />
+<input type="number" name="count" hx-post="/count" hx-trigger="change delay:1s" min=0 id="%[1]s-%d" value="0" />
 <button id="delete-%[2]d" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
 </div>
 %s`)
@@ -82,12 +84,16 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 
 	date := parts[1]
 
-	finalHTML, err := computeDateFinalHTML(date)
+	finalHTML, counterID, err := computeDateFinalHTML(date)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// Initialize this counter element's map entry to 0.
+	juicecount.Set(counterID, 0)
+	log.Println(juicecount.Info())
 
 	_, err = w.Write([]byte(finalHTML))
 
@@ -98,16 +104,19 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 
 // computeDateFinalHTML returns the HTML to serve upon setting a date,
 // dependent on whether the action (hxTriggerName) is an edit or an
-// add.
-func computeDateFinalHTML(date string) (string, error) {
+// add. It also returns the ID of the new counter element, which is
+// here used to initialize the corresponding map value to 0.
+func computeDateFinalHTML(date string) (string, string, error) {
 	switch hxTriggerName {
 	case "edit":
 		countElementIndex++
-		return fmt.Sprintf(postDateHTML, date, countElementIndex, ""), nil
+		newID := fmt.Sprintf("%s-%d", date, countElementIndex)
+		return fmt.Sprintf(postDateHTML, date, countElementIndex, ""), newID, nil
 	case "add":
 		countElementIndex++
-		return fmt.Sprintf(postDateHTML, date, countElementIndex, addDateButton), nil
+		newID := fmt.Sprintf("%s-%d", date, countElementIndex)
+		return fmt.Sprintf(postDateHTML, date, countElementIndex, addDateButton), newID, nil
 	default:
-		return "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
+		return "", "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
 	}
 }
