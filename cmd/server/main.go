@@ -11,14 +11,9 @@ func main() {
 	// Set up server.
 	mux := http.NewServeMux()
 
-	// For now, we need this primarily to load HTMX.
-	loadJS := http.StripPrefix("/js/", http.FileServer(http.Dir("./js")))
-
-	// Serve page as a static asset.
+	// Serve page as a static asset (includes CSS and JS, where
+	// HTMX resides)
 	serveMainPage := http.StripPrefix("/app/", http.FileServer(http.Dir("./app")))
-
-	// Static stuff.
-	mux.Handle("GET /js/", loadJS)
 	mux.Handle("GET /app/", serveMainPage)
 
 	// Endpoints (each handler is defined in its own file inside
