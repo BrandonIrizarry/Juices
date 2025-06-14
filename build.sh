@@ -10,7 +10,7 @@ done
 cat > run.sh <<EOF
 #!/usr/bin/env bash
 
-./tmp/sitegen
+./tmp/sitegen > ./app/index.html
 ./tmp/server
 
 EOF
