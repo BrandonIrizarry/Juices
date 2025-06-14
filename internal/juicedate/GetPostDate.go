@@ -37,7 +37,7 @@ func createDeleteButton(index int) string {
 
 func createEntry(index int, date string, wasAdd bool) string {
 	entryHTML := strings.TrimSpace(`
-<div>
+<div class="entry">
 %s
 %s
 %s
