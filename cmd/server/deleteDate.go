@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/BrandonIrizarry/juices/internal/juicecount"
 )
 
 func deleteDate(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +41,7 @@ func deleteDate(w http.ResponseWriter, r *http.Request) {
 
 	var foundDateID string
 
-	for dateID := range idsToCounts {
+	for dateID := range juicecount.IDsToCounts {
 		parts := strings.SplitN(dateID, "-", 3)
 
 		if len(parts) != 3 {
@@ -72,7 +74,7 @@ func deleteDate(w http.ResponseWriter, r *http.Request) {
 		log.Println("Warning: counter is either uninitialized, or an error has occured.")
 	}
 
-	delete(idsToCounts, foundDateID)
+	delete(juicecount.IDsToCounts, foundDateID)
 
-	log.Printf("Current counts: %v\n", idsToCounts)
+	log.Printf("Current counts: %v\n", juicecount.IDsToCounts)
 }

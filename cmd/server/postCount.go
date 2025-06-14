@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-)
 
-var idsToCounts = make(map[string]int)
+	"github.com/BrandonIrizarry/juices/internal/juicecount"
+)
 
 func postCount(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
@@ -31,7 +31,7 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusInternalServerError)
 	}
 
-	idsToCounts[id] = count
+	juicecount.IDsToCounts[id] = count
 
-	log.Printf("Current counts: %v\n", idsToCounts)
+	log.Printf("Current counts: %v\n", juicecount.IDsToCounts)
 }
