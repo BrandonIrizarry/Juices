@@ -55,6 +55,11 @@ func Delete(idIndex int) error {
 		}
 	}
 
+	// This ID index doesn't exist; report an error.
+	if foundID == "" {
+		return fmt.Errorf("Missing ID index: %d", idIndex)
+	}
+
 	delete(idsToCounts, foundID)
 
 	return nil
