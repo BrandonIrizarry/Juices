@@ -96,6 +96,9 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// computeDateFinalHTML returns the HTML to serve upon setting a date,
+// dependent on whether the action (hxTriggerName) is an edit or an
+// add.
 func computeDateFinalHTML(date string) (string, error) {
 	switch hxTriggerName {
 	case "edit":
