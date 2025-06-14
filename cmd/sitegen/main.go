@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"html/template"
 	"log"
 	"os"
 )
@@ -13,7 +14,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println(items)
+	t, err := template.ParseFiles("assets/template.html")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t.Execute(os.Stdout, items)
 }
 
 func inventoryItems() ([]string, error) {
