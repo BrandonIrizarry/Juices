@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -36,8 +37,11 @@ func inventoryItems() ([]string, error) {
 	buffer := make([]string, 0)
 
 	for scanner.Scan() {
-		item := scanner.Text()
-		buffer = append(buffer, item)
+		item := strings.TrimSpace(scanner.Text())
+
+		if item != "" {
+			buffer = append(buffer, item)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
