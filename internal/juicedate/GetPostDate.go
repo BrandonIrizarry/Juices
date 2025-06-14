@@ -13,17 +13,49 @@ var getDateHTML = strings.TrimSpace(`
 <input type="date" name="date" hx-post="/date" hx-swap="outerHTML"/>
 `)
 
-var postDateHTML = strings.TrimSpace(`
-<div class="entry">
-<span name="edit" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
-<input type="number" name="count" hx-post="/count" hx-trigger="change delay:1s" min=0 id="%[1]s-%d" value="0" />
-<button id="delete-%[2]d" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
+func createSpan(index int, date string) string {
+	spanHTML := strings.TrimSpace(`
+<span name="edit" id="edit-%d" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
+`)
+
+	return fmt.Sprintf(spanHTML, index, date)
+}
+
+func createCounter(index int, date string) string {
+	counterHTML := strings.TrimSpace(`
+<input type="number" name="count" hx-post="/count" hx-trigger="change delay:1s" min=0 id="%s-%d" value="0" />
+`)
+	return fmt.Sprintf(counterHTML, date, index)
+}
+
+func createDeleteButton(index int) string {
+	deleteButtonHTML := strings.TrimSpace(`
+<button id="delete-%d" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
+`)
+	return fmt.Sprintf(deleteButtonHTML, index)
+}
+
+func createEntry(index int, date string, wasAdd bool) string {
+	entryHTML := strings.TrimSpace(`
+<div>
+%s
+%s
+%s
 </div>
 %s`)
 
-var addDateButton = strings.TrimSpace(`
-<button name="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>
-`)
+	var addDateButton string
+
+	if wasAdd {
+		addDateButton = strings.TrimSpace(`<button name="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>`)
+	}
+
+	span := createSpan(index, date)
+	counter := createCounter(index, date)
+	deleteButton := createDeleteButton(index)
+
+	return fmt.Sprintf(entryHTML, span, counter, deleteButton, addDateButton)
+}
 
 // The name of the widget requesting GET /date (could be "add" or "edit".)
 var hxTriggerName string
@@ -111,11 +143,11 @@ func computeDateFinalHTML(date string) (string, string, error) {
 	case "edit":
 		countElementIndex++
 		newID := fmt.Sprintf("%s-%d", date, countElementIndex)
-		return fmt.Sprintf(postDateHTML, date, countElementIndex, ""), newID, nil
+		return createEntry(countElementIndex, date, false), newID, nil
 	case "add":
 		countElementIndex++
 		newID := fmt.Sprintf("%s-%d", date, countElementIndex)
-		return fmt.Sprintf(postDateHTML, date, countElementIndex, addDateButton), newID, nil
+		return createEntry(countElementIndex, date, true), newID, nil
 	default:
 		return "", "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
 	}
