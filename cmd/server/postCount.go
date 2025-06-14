@@ -31,7 +31,7 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, message, http.StatusInternalServerError)
 	}
 
-	juicecount.IDsToCounts[id] = count
+	juicecount.Set(id, count)
 
-	log.Printf("Current counts: %v\n", juicecount.IDsToCounts)
+	log.Println(juicecount.Info())
 }
