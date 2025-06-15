@@ -1,70 +1,42 @@
 package juicecount
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
-	"strings"
+
+	"github.com/BrandonIrizarry/juices/internal/cid"
 )
 
-var idsToCounts = make(map[string]int)
+var idsToCounts = make(map[cid.CanonicalID]int)
 
-func Set(id string, count int) error {
-	if id == "" {
-		return errors.New("Empty ID")
+func Set(widgetType, itemName, date string, index, count int) {
+	cid := cid.CanonicalID{
+		WidgetType: widgetType,
+		ItemName:   itemName,
+		Date:       date,
+		Index:      index,
 	}
 
-	if count < 0 {
-		return fmt.Errorf("Invalid count: %d", count)
-	}
-
-	idsToCounts[id] = count
-
-	return nil
+	idsToCounts[cid] = count
 }
 
-func Get(id string) (int, error) {
-	count, ok := idsToCounts[id]
+func SetBulk(cid cid.CanonicalID, count int) {
+	idsToCounts[cid] = count
+}
+
+func Get(cid cid.CanonicalID) (int, error) {
+	count, ok := idsToCounts[cid]
 
 	if !ok {
-		return 0, fmt.Errorf("Nonexistent ID: %s", id)
+		return 0, fmt.Errorf("Nonexistent ID: %#v", cid)
 	}
 
 	return count, nil
 }
 
-func Delete(idIndex int) error {
-	var foundID string
-
-	for id := range idsToCounts {
-		parts := strings.SplitN(id, "-", 3)
-
-		if len(parts) != 3 {
-			return fmt.Errorf("Invalid map-key/counter ID: %s", id)
-		}
-
-		currentIDIndex, err := strconv.Atoi(parts[2])
-
-		if err != nil {
-			return err
-		}
-
-		if currentIDIndex == idIndex {
-			foundID = id
-			break
-		}
-	}
-
-	// This ID index doesn't exist; report an error.
-	if foundID == "" {
-		return fmt.Errorf("Missing ID index: %d", idIndex)
-	}
-
-	delete(idsToCounts, foundID)
-
-	return nil
+func Delete(cid cid.CanonicalID) {
+	delete(idsToCounts, cid)
 }
 
 func Info() string {
-	return fmt.Sprintf("Current counts: %v\n", idsToCounts)
+	return fmt.Sprintf("Current counts: %#v\n", idsToCounts)
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/BrandonIrizarry/juices/internal/cid"
 	"github.com/BrandonIrizarry/juices/internal/juicecount"
 )
 
@@ -23,15 +24,15 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 
 	// Record the count under the given ID (we'll accumulate
 	// counts under each date later.)
-	id := r.Header.Get("Hx-Trigger")
+	canonicalID, err := cid.ParseCanonicalID(r.Header.Get("Hx-Trigger"))
 
-	if id == "" {
-		message := "This hypermedia element requires an id attribute"
-		log.Println(message)
-		http.Error(w, message, http.StatusInternalServerError)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	juicecount.Set(id, count)
+	juicecount.SetBulk(canonicalID, count)
 
 	log.Println(juicecount.Info())
 }

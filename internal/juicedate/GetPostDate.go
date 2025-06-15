@@ -4,15 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 
+	"github.com/BrandonIrizarry/juices/internal/cid"
 	"github.com/BrandonIrizarry/juices/internal/juicecount"
 	"github.com/BrandonIrizarry/juices/internal/juicehtml"
 )
-
-// The name of the widget requesting GET /date (could be "add" or "edit".)
-var hxTriggerName string
 
 // GetDate serves the HTML5 date widget to the page.
 func GetDate(w http.ResponseWriter, r *http.Request) {
@@ -20,52 +17,44 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	hxTriggerName = r.Header.Get("Hx-Trigger-Name")
+	// Whenever possible, we only work with IDs. In this case,
+	// there is only one Add Item button per h1 header, and the
+	// ids are differentiated precisely by the value of this
+	// header.
+	addButtonID := r.Header.Get("Hx-Trigger")
 
-	if hxTriggerName == "" {
-		message := "This hypermedia element requires a name attribute"
-		log.Println(message)
-		http.Error(w, message, http.StatusInternalServerError)
+	log.Printf("ID of triggering element (add/edit): %s\n", addButtonID)
+
+	// Note: since this could be an Add Date button, the only
+	// valid fields for 'canonicalID' are 'WidgetType' and
+	// 'ItemName'.
+	canonicalID, err := cid.ParseCanonicalID(addButtonID)
+
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("Name of triggering element (add/edit): %s\n", hxTriggerName)
+	wtype := canonicalID.WidgetType
 
-	if hxTriggerName != "add" && hxTriggerName != "edit" {
-		message := fmt.Sprintf("Unexpected trigger element: %s", hxTriggerName)
+	if wtype != "add" && wtype != "edit" {
+		message := fmt.Sprintf("Unexpected trigger element: %s", wtype)
 		log.Println(message)
 		http.Error(w, message, http.StatusInternalServerError)
 		return
 	}
 
 	// If an edit, delete the existing map entry.
-	if hxTriggerName == "edit" {
-		id := r.Header.Get("Hx-Trigger")
-
-		rawIndex, found := strings.CutPrefix(id, "edit-")
-
-		if !found {
-			message := fmt.Sprintf("Invalid hxTriggerName: %s", hxTriggerName)
-			log.Println(message)
-			http.Error(w, message, http.StatusInternalServerError)
-			return
-		}
-
-		index, err := strconv.Atoi(rawIndex)
-
-		if err != nil {
-			log.Println(err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		juicecount.Delete(index)
+	if wtype == "edit" {
+		juicecount.Delete(canonicalID)
+		log.Println(juicecount.Info())
 	}
 
-	itemName := r.Header.Get("Hx-Trigger")
-	getDateHTML := juicehtml.CreateGetDateHTML(itemName)
+	itemName := canonicalID.ItemName
+	getDateHTML := juicehtml.CreateGetDateHTML(wtype, itemName)
 
-	_, err := w.Write([]byte(getDateHTML))
+	_, err = w.Write([]byte(getDateHTML))
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -92,8 +81,17 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 
 	date := parts[1]
 
-	itemName := r.Header.Get("Hx-Trigger")
-	finalHTML, counterID, err := juicehtml.ComputeDateFinalHTML(date, itemName, hxTriggerName)
+	canonicalID, err := cid.ParseCanonicalID(r.Header.Get("Hx-Trigger"))
+
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	itemName := canonicalID.ItemName
+	widgetType := canonicalID.WidgetType
+	finalHTML, index, err := juicehtml.ComputeDateFinalHTML(date, itemName, widgetType)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -101,7 +99,8 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Initialize this counter element's map entry to 0.
-	juicecount.Set(counterID, 0)
+	juicecount.Set("count", itemName, date, index, 0)
+
 	log.Println(juicecount.Info())
 
 	_, err = w.Write([]byte(finalHTML))

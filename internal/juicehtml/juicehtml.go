@@ -2,7 +2,6 @@ package juicehtml
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -71,55 +70,26 @@ func generateRawCanonicalID(index int, widgetType, itemName, date string) string
 	return fmt.Sprintf("%s_%s_%s_%d", widgetType, itemName, date, index)
 }
 
-type CanonicalID struct {
-	ItemName   string
-	WidgetType string
-	Date       string
-	Index      int
-}
-
-func ParseCanonicalID(rawCID string) (CanonicalID, error) {
-	parts := strings.Split(rawCID, "_")
-
-	if len(parts) != 4 {
-		return CanonicalID{}, fmt.Errorf("Malformed CID: %s", rawCID)
-	}
-
-	itemName := parts[0]
-	widgetType := parts[1]
-	date := parts[2]
-	rawIndex := parts[3]
-
-	index, err := strconv.Atoi(rawIndex)
-
-	if err != nil {
-		return CanonicalID{}, err
-	}
-
-	CID := CanonicalID{itemName, widgetType, date, index}
-
-	return CID, nil
-}
-
 // computeDateFinalHTML returns the HTML to serve upon setting a date,
 // dependent on whether the action (hxTriggerName) is an edit or an
 // add. It also returns the ID of the new counter element, which is
 // here used to initialize the corresponding map value to 0.
-func ComputeDateFinalHTML(date, itemName, hxTriggerName string) (string, string, error) {
-	if hxTriggerName != "edit" && hxTriggerName != "add" {
-		return "", "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
+func ComputeDateFinalHTML(date, itemName, widgetType string) (string, int, error) {
+	if widgetType != "edit" && widgetType != "add" {
+		return "", 0, fmt.Errorf("Invalid HX trigger name: %s", widgetType)
 	}
 
 	countElementIndex++
-	newID := fmt.Sprintf("%s-%d", date, countElementIndex)
-	wasAdd := (hxTriggerName == "add")
-	return createEntry(countElementIndex, itemName, date, wasAdd), newID, nil
+	wasAdd := (widgetType == "add")
+	return createEntry(countElementIndex, itemName, date, wasAdd), countElementIndex, nil
 }
 
-func CreateGetDateHTML(itemName string) string {
+func CreateGetDateHTML(widgetType, itemName string) string {
+	CID := generateRawCanonicalID(0, widgetType, itemName, "00-00")
+
 	getDateHTML := strings.TrimSpace(`
 <input type="date" name="date" id="%s" hx-post="/date" hx-swap="outerHTML"/>
 `)
 
-	return fmt.Sprintf(getDateHTML, itemName)
+	return fmt.Sprintf(getDateHTML, CID)
 }
