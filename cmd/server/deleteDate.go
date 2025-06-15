@@ -3,27 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
-
-	"github.com/BrandonIrizarry/juices/internal/cid"
-	"github.com/BrandonIrizarry/juices/internal/juicecount"
 )
 
 func deleteDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
-
-	canonicalID, err := cid.ParseCanonicalID(r)
-
-	if err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	if err := juicecount.Delete(canonicalID); err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	log.Println(juicecount.Info())
 }
