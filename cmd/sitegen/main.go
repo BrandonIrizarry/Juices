@@ -15,7 +15,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	t, err := template.New("template").Funcs(template.FuncMap{
+	t, err := template.New("start").Funcs(template.FuncMap{
 		"kebabCase": func(name string) string {
 			subwords := strings.Fields(name)
 
@@ -25,7 +25,7 @@ func main() {
 
 			return strings.Join(subwords, "-")
 		},
-	}).ParseFiles("assets/template.html")
+	}).ParseFiles("assets/start.html")
 
 	if err != nil {
 		log.Fatal(err)
