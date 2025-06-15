@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/BrandonIrizarry/juices/internal/juicecount"
@@ -87,6 +88,30 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 		log.Println(message)
 		http.Error(w, message, http.StatusInternalServerError)
 		return
+	}
+
+	// If an edit, delete the existing map entry.
+	if hxTriggerName == "edit" {
+		id := r.Header.Get("Hx-Trigger")
+
+		rawIndex, found := strings.CutPrefix(id, "edit-")
+
+		if !found {
+			message := fmt.Sprintf("Invalid hxTriggerName: %s", hxTriggerName)
+			log.Println(message)
+			http.Error(w, message, http.StatusInternalServerError)
+			return
+		}
+
+		index, err := strconv.Atoi(rawIndex)
+
+		if err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		juicecount.Delete(index)
 	}
 
 	_, err := w.Write([]byte(getDateHTML))
