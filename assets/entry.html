@@ -1,6 +1,6 @@
 {{ define "entry" }}
 
-<div>
+<div class="entry">
   <span>{{ .Date }}</span>
   <input type="number" id="{{ inc }}" hx-post="/count/{{ .ItemName }}" hx-trigger="change delay:1s" min="0" value="0" />
   <button id="{{ inc }}" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
