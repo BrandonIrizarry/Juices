@@ -12,7 +12,7 @@ import (
 var countElementIndex = 0
 
 func createSpan(index int, itemName, date string) string {
-	CID := generateCanonicalID(index, "edit", itemName, date)
+	CID := generateRawCanonicalID(index, "edit", itemName, date)
 
 	spanHTML := strings.TrimSpace(`
 <span name="edit" id="%s" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
@@ -22,7 +22,7 @@ func createSpan(index int, itemName, date string) string {
 }
 
 func createCounter(index int, itemName, date string) string {
-	CID := generateCanonicalID(index, "count", itemName, date)
+	CID := generateRawCanonicalID(index, "count", itemName, date)
 
 	counterHTML := strings.TrimSpace(`
 <input type="number" name="count" id="%s" hx-post="/count" hx-trigger="change delay:1s" min=0 value="0" />
@@ -31,7 +31,7 @@ func createCounter(index int, itemName, date string) string {
 }
 
 func createDeleteButton(index int, itemName, date string) string {
-	CID := generateCanonicalID(index, "delete", itemName, date)
+	CID := generateRawCanonicalID(index, "delete", itemName, date)
 
 	deleteButtonHTML := strings.TrimSpace(`
 <button id="%s" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
@@ -67,7 +67,7 @@ func createEntry(index int, itemName, date string, wasAdd bool) string {
 	return fmt.Sprintf(entryHTML, span, counter, deleteButton, addDateButton)
 }
 
-func generateCanonicalID(index int, widgetType, itemName, date string) string {
+func generateRawCanonicalID(index int, widgetType, itemName, date string) string {
 	return fmt.Sprintf("%s_%s_%s_%d", widgetType, itemName, date, index)
 }
 
