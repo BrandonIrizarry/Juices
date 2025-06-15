@@ -139,16 +139,12 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 // add. It also returns the ID of the new counter element, which is
 // here used to initialize the corresponding map value to 0.
 func computeDateFinalHTML(date string) (string, string, error) {
-	switch hxTriggerName {
-	case "edit":
-		countElementIndex++
-		newID := fmt.Sprintf("%s-%d", date, countElementIndex)
-		return createEntry(countElementIndex, date, false), newID, nil
-	case "add":
-		countElementIndex++
-		newID := fmt.Sprintf("%s-%d", date, countElementIndex)
-		return createEntry(countElementIndex, date, true), newID, nil
-	default:
+	if hxTriggerName != "edit" && hxTriggerName != "add" {
 		return "", "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
 	}
+
+	countElementIndex++
+	newID := fmt.Sprintf("%s-%d", date, countElementIndex)
+	wasAdd := (hxTriggerName == "add")
+	return createEntry(countElementIndex, date, wasAdd), newID, nil
 }
