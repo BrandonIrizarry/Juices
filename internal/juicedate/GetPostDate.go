@@ -17,18 +17,10 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	// Whenever possible, we only work with IDs. In this case,
-	// there is only one Add Item button per h1 header, and the
-	// ids are differentiated precisely by the value of this
-	// header.
-	addButtonID := r.Header.Get("Hx-Trigger")
-
-	log.Printf("ID of triggering element (add/edit): %s\n", addButtonID)
-
 	// Note: since this could be an Add Date button, the only
 	// valid fields for 'canonicalID' are 'WidgetType' and
 	// 'ItemName'.
-	canonicalID, err := cid.ParseCanonicalID(addButtonID)
+	canonicalID, err := cid.ParseCanonicalID(r)
 
 	if err != nil {
 		log.Println(err)
@@ -86,7 +78,7 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 
 	date := parts[1]
 
-	canonicalID, err := cid.ParseCanonicalID(r.Header.Get("Hx-Trigger"))
+	canonicalID, err := cid.ParseCanonicalID(r)
 
 	if err != nil {
 		log.Println(err)

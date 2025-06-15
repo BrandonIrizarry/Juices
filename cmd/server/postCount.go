@@ -24,7 +24,7 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 
 	// Record the count under the given ID (we'll accumulate
 	// counts under each date later.)
-	canonicalID, err := cid.ParseCanonicalID(r.Header.Get("Hx-Trigger"))
+	canonicalID, err := cid.ParseCanonicalID(r)
 
 	if err != nil {
 		log.Println(err)

@@ -11,7 +11,7 @@ import (
 func deleteDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
-	canonicalID, err := cid.ParseCanonicalID(r.Header.Get("Hx-Trigger"))
+	canonicalID, err := cid.ParseCanonicalID(r)
 
 	if err != nil {
 		log.Println(err)

@@ -1,7 +1,9 @@
 package cid
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -13,7 +15,13 @@ type CanonicalID struct {
 	Index      int
 }
 
-func ParseCanonicalID(rawCID string) (CanonicalID, error) {
+func ParseCanonicalID(r *http.Request) (CanonicalID, error) {
+	rawCID := r.Header.Get("Hx-Trigger")
+
+	if rawCID == "" {
+		return CanonicalID{}, errors.New("Empty Hx-Trigger header (missing id attribute)")
+	}
+
 	parts := strings.Split(rawCID, "_")
 
 	if len(parts) != 4 {
