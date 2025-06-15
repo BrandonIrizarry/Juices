@@ -80,7 +80,7 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("ID of triggering element (add/edit): %s\n", hxTriggerName)
+	log.Printf("Name of triggering element (add/edit): %s\n", hxTriggerName)
 
 	if hxTriggerName != "add" && hxTriggerName != "edit" {
 		message := fmt.Sprintf("Unexpected trigger element: %s", hxTriggerName)
