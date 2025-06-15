@@ -3,13 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"strings"
 )
-
-var index int
 
 // PostDate serves a row consisting of the selected date, an HTML5
 // counter widget, and a Delete button. If this is an Add Date
@@ -36,12 +33,7 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entryHTML, err := template.New("entry").Funcs(template.FuncMap{
-		"inc": func() int {
-			index++
-			return index
-		},
-	}).ParseFiles("assets/entry.html")
+	entryHTML, err := entryWithIndex()
 
 	if err != nil {
 		log.Println(err)

@@ -1,9 +1,12 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 )
+
+var entryWithIndex func() (*template.Template, error)
 
 func main() {
 	// Set up server.
@@ -27,6 +30,26 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
+func initEntryWithIndex() func() (*template.Template, error) {
+	var index int
+
+	return func() (*template.Template, error) {
+		entryHTML, err := template.New("entry").Funcs(template.FuncMap{
+			"inc": func() int {
+				index++
+				return index
+			},
+		}).ParseFiles("assets/entry.html")
+
+		if err != nil {
+			return nil, err
+		}
+
+		return entryHTML, nil
+	}
+}
+
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	entryWithIndex = initEntryWithIndex()
 }
