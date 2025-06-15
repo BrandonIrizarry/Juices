@@ -1,3 +1,5 @@
+{{ define "template" }}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,9 +12,11 @@
     {{ range . }}
     <section>
       <h1>{{ . }}</h1>
-      <button name="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>
+      <button name="add" id="{{ kebabCase . }}" hx-get="/date" hx-swap="outerHTML">Add Date</button>
     </section>
     {{ end }}
   </body>
   <script src="/app/js/htmx.min.js"></script>
 </html>
+
+{{ end }}

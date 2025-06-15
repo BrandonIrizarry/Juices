@@ -15,13 +15,25 @@ func main() {
 		log.Fatal(err)
 	}
 
-	t, err := template.ParseFiles("assets/template.html")
+	t, err := template.New("template").Funcs(template.FuncMap{
+		"kebabCase": func(name string) string {
+			subwords := strings.Fields(name)
+
+			for i := range subwords {
+				subwords[i] = strings.ToLower(subwords[i])
+			}
+
+			return strings.Join(subwords, "-")
+		},
+	}).ParseFiles("assets/template.html")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	t.Execute(os.Stdout, items)
+	if err := t.Execute(os.Stdout, items); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func inventoryItems() ([]string, error) {
