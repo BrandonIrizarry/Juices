@@ -16,10 +16,7 @@ func main() {
 
 	// Endpoints (each handler is defined in its own file inside
 	// the main package.
-	mux.HandleFunc("GET /date", getDate)
-	mux.HandleFunc("POST /date", postDate)
-	mux.HandleFunc("DELETE /date", deleteDate)
-	mux.HandleFunc("POST /count", postCount)
+	mux.HandleFunc("GET /date/{itemName}", getDate)
 
 	srv := &http.Server{
 		Addr:    ":8080",

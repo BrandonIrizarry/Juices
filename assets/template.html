@@ -12,7 +12,7 @@
     {{ range . }}
     <section>
       <h1>{{ . }}</h1>
-      <button id="{{ kebabCase . }}" hx-get="/date" hx-swap="outerHTML">Add Date</button>
+      <button hx-get="/date/{{ kebabCase . }}" hx-swap="outerHTML">Add Date</button>
     </section>
     {{ end }}
   </body>

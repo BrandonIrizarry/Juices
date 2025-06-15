@@ -83,13 +83,3 @@ func ComputeDateFinalHTML(date, itemName, widgetType string) (string, int, error
 	wasAdd := (widgetType == "add")
 	return createEntry(countElementIndex, itemName, date, wasAdd), countElementIndex, nil
 }
-
-func CreateGetDateHTML(widgetType, itemName string) string {
-	CID := generateRawCanonicalID(0, widgetType, itemName, "00-00")
-
-	getDateHTML := strings.TrimSpace(`
-<input type="date" name="date" id="%s" hx-post="/date" hx-swap="outerHTML"/>
-`)
-
-	return fmt.Sprintf(getDateHTML, CID)
-}

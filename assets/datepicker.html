@@ -1,0 +1,5 @@
+{{ define "datepicker" }}
+
+<input type="date" hx-post="/date/{{ . }}" hx-swap="outerHTML" />
+
+{{ end }}
