@@ -8,63 +8,11 @@ import (
 	"strings"
 
 	"github.com/BrandonIrizarry/juices/internal/juicecount"
+	"github.com/BrandonIrizarry/juices/internal/juicehtml"
 )
-
-var getDateHTML = strings.TrimSpace(`
-<input type="date" name="date" hx-post="/date" hx-swap="outerHTML"/>
-`)
-
-func createSpan(index int, date string) string {
-	spanHTML := strings.TrimSpace(`
-<span name="edit" id="edit-%d" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
-`)
-
-	return fmt.Sprintf(spanHTML, index, date)
-}
-
-func createCounter(index int, date string) string {
-	counterHTML := strings.TrimSpace(`
-<input type="number" name="count" hx-post="/count" hx-trigger="change delay:1s" min=0 id="%s-%d" value="0" />
-`)
-	return fmt.Sprintf(counterHTML, date, index)
-}
-
-func createDeleteButton(index int) string {
-	deleteButtonHTML := strings.TrimSpace(`
-<button id="delete-%d" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
-`)
-	return fmt.Sprintf(deleteButtonHTML, index)
-}
-
-func createEntry(index int, date string, wasAdd bool) string {
-	entryHTML := strings.TrimSpace(`
-<div class="entry">
-%s
-%s
-%s
-</div>
-%s`)
-
-	var addDateButton string
-
-	if wasAdd {
-		addDateButton = strings.TrimSpace(`<button name="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>`)
-	}
-
-	span := createSpan(index, date)
-	counter := createCounter(index, date)
-	deleteButton := createDeleteButton(index)
-
-	return fmt.Sprintf(entryHTML, span, counter, deleteButton, addDateButton)
-}
 
 // The name of the widget requesting GET /date (could be "add" or "edit".)
 var hxTriggerName string
-
-// The index appended to the computed ID of a counter widget (input
-// type=number.) This is used to enforce unique HTML id attribute
-// values among the counter widgets themselves.
-var countElementIndex = 0
 
 // GetDate serves the HTML5 date widget to the page.
 func GetDate(w http.ResponseWriter, r *http.Request) {
@@ -114,6 +62,7 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 		juicecount.Delete(index)
 	}
 
+	getDateHTML := strings.TrimSpace(`<input type="date" name="date" hx-post="/date" hx-swap="outerHTML"/>`)
 	_, err := w.Write([]byte(getDateHTML))
 
 	if err != nil {
@@ -141,7 +90,7 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 
 	date := parts[1]
 
-	finalHTML, counterID, err := computeDateFinalHTML(date)
+	finalHTML, counterID, err := juicehtml.ComputeDateFinalHTML(date, hxTriggerName)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -157,19 +106,4 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-// computeDateFinalHTML returns the HTML to serve upon setting a date,
-// dependent on whether the action (hxTriggerName) is an edit or an
-// add. It also returns the ID of the new counter element, which is
-// here used to initialize the corresponding map value to 0.
-func computeDateFinalHTML(date string) (string, string, error) {
-	if hxTriggerName != "edit" && hxTriggerName != "add" {
-		return "", "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
-	}
-
-	countElementIndex++
-	newID := fmt.Sprintf("%s-%d", date, countElementIndex)
-	wasAdd := (hxTriggerName == "add")
-	return createEntry(countElementIndex, date, wasAdd), newID, nil
 }
