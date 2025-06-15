@@ -62,7 +62,9 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 		juicecount.Delete(index)
 	}
 
-	getDateHTML := strings.TrimSpace(`<input type="date" name="date" hx-post="/date" hx-swap="outerHTML"/>`)
+	itemName := r.Header.Get("Hx-Trigger")
+	getDateHTML := juicehtml.CreateGetDateHTML(itemName)
+
 	_, err := w.Write([]byte(getDateHTML))
 
 	if err != nil {
@@ -90,7 +92,8 @@ func PostDate(w http.ResponseWriter, r *http.Request) {
 
 	date := parts[1]
 
-	finalHTML, counterID, err := juicehtml.ComputeDateFinalHTML(date, hxTriggerName)
+	itemName := r.Header.Get("Hx-Trigger")
+	finalHTML, counterID, err := juicehtml.ComputeDateFinalHTML(date, itemName, hxTriggerName)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

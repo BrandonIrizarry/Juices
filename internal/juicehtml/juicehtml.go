@@ -2,6 +2,7 @@ package juicehtml
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -10,44 +11,41 @@ import (
 // values among the counter widgets themselves.
 var countElementIndex = 0
 
-// computeDateFinalHTML returns the HTML to serve upon setting a date,
-// dependent on whether the action (hxTriggerName) is an edit or an
-// add. It also returns the ID of the new counter element, which is
-// here used to initialize the corresponding map value to 0.
-func ComputeDateFinalHTML(date, hxTriggerName string) (string, string, error) {
-	if hxTriggerName != "edit" && hxTriggerName != "add" {
-		return "", "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
-	}
+func createSpan(index int, itemName, date string) string {
+	CID := generateCanonicalID(index, "edit", itemName, date)
 
-	countElementIndex++
-	newID := fmt.Sprintf("%s-%d", date, countElementIndex)
-	wasAdd := (hxTriggerName == "add")
-	return createEntry(countElementIndex, date, wasAdd), newID, nil
-}
-
-func createSpan(index int, date string) string {
 	spanHTML := strings.TrimSpace(`
-<span name="edit" id="edit-%d" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
+<span name="edit" id="%s" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
 `)
 
-	return fmt.Sprintf(spanHTML, index, date)
+	return fmt.Sprintf(spanHTML, CID, date)
 }
 
-func createCounter(index int, date string) string {
+func createCounter(index int, itemName, date string) string {
+	CID := generateCanonicalID(index, "count", itemName, date)
+
 	counterHTML := strings.TrimSpace(`
-<input type="number" name="count" hx-post="/count" hx-trigger="change delay:1s" min=0 id="%s-%d" value="0" />
+<input type="number" name="count" id="%s" hx-post="/count" hx-trigger="change delay:1s" min=0 value="0" />
 `)
-	return fmt.Sprintf(counterHTML, date, index)
+	return fmt.Sprintf(counterHTML, CID)
 }
 
-func createDeleteButton(index int) string {
+func createDeleteButton(index int, itemName, date string) string {
+	CID := generateCanonicalID(index, "delete", itemName, date)
+
 	deleteButtonHTML := strings.TrimSpace(`
-<button id="delete-%d" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
+<button id="%s" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
 `)
-	return fmt.Sprintf(deleteButtonHTML, index)
+	return fmt.Sprintf(deleteButtonHTML, CID)
 }
 
-func createEntry(index int, date string, wasAdd bool) string {
+func createAddDateButton(itemName string) string {
+	addDateButton := strings.TrimSpace(`<button name="add" id="%s" hx-get="/date" hx-swap="outerHTML">Add Date</button>`)
+
+	return fmt.Sprintf(addDateButton, itemName)
+}
+
+func createEntry(index int, itemName, date string, wasAdd bool) string {
 	entryHTML := strings.TrimSpace(`
 <div class="entry">
 %s
@@ -59,12 +57,69 @@ func createEntry(index int, date string, wasAdd bool) string {
 	var addDateButton string
 
 	if wasAdd {
-		addDateButton = strings.TrimSpace(`<button name="add" hx-get="/date" hx-swap="outerHTML">Add Date</button>`)
+		addDateButton = createAddDateButton(itemName)
 	}
 
-	span := createSpan(index, date)
-	counter := createCounter(index, date)
-	deleteButton := createDeleteButton(index)
+	span := createSpan(index, itemName, date)
+	counter := createCounter(index, itemName, date)
+	deleteButton := createDeleteButton(index, itemName, date)
 
 	return fmt.Sprintf(entryHTML, span, counter, deleteButton, addDateButton)
+}
+
+func generateCanonicalID(index int, widgetType, itemName, date string) string {
+	return fmt.Sprintf("%s_%s_%s_%d", widgetType, itemName, date, index)
+}
+
+type CanonicalID struct {
+	ItemName   string
+	WidgetType string
+	Date       string
+	Index      int
+}
+
+func ParseCanonicalID(rawCID string) (CanonicalID, error) {
+	parts := strings.Split(rawCID, "_")
+
+	if len(parts) != 4 {
+		return CanonicalID{}, fmt.Errorf("Malformed CID: %s", rawCID)
+	}
+
+	itemName := parts[0]
+	widgetType := parts[1]
+	date := parts[2]
+	rawIndex := parts[3]
+
+	index, err := strconv.Atoi(rawIndex)
+
+	if err != nil {
+		return CanonicalID{}, err
+	}
+
+	CID := CanonicalID{itemName, widgetType, date, index}
+
+	return CID, nil
+}
+
+// computeDateFinalHTML returns the HTML to serve upon setting a date,
+// dependent on whether the action (hxTriggerName) is an edit or an
+// add. It also returns the ID of the new counter element, which is
+// here used to initialize the corresponding map value to 0.
+func ComputeDateFinalHTML(date, itemName, hxTriggerName string) (string, string, error) {
+	if hxTriggerName != "edit" && hxTriggerName != "add" {
+		return "", "", fmt.Errorf("Invalid HX trigger name: %s", hxTriggerName)
+	}
+
+	countElementIndex++
+	newID := fmt.Sprintf("%s-%d", date, countElementIndex)
+	wasAdd := (hxTriggerName == "add")
+	return createEntry(countElementIndex, itemName, date, wasAdd), newID, nil
+}
+
+func CreateGetDateHTML(itemName string) string {
+	getDateHTML := strings.TrimSpace(`
+<input type="date" name="date" id="%s" hx-post="/date" hx-swap="outerHTML"/>
+`)
+
+	return fmt.Sprintf(getDateHTML, itemName)
 }
