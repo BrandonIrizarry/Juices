@@ -33,8 +33,16 @@ func Get(cid cid.CanonicalID) (int, error) {
 	return count, nil
 }
 
-func Delete(cid cid.CanonicalID) {
+func Delete(cid cid.CanonicalID) error {
+	_, ok := idsToCounts[cid]
+
+	if !ok {
+		return fmt.Errorf("Nonexistent CID: %#v", cid)
+	}
+
 	delete(idsToCounts, cid)
+
+	return nil
 }
 
 func Info() string {

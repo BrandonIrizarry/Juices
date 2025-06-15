@@ -47,7 +47,12 @@ func GetDate(w http.ResponseWriter, r *http.Request) {
 
 	// If an edit, delete the existing map entry.
 	if wtype == "edit" {
-		juicecount.Delete(canonicalID)
+		if err := juicecount.Delete(canonicalID); err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		log.Println(juicecount.Info())
 	}
 
