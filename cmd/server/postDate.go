@@ -1,15 +1,15 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
-
-	"github.com/BrandonIrizarry/juices/internal/cid"
-	"github.com/BrandonIrizarry/juices/internal/juicecount"
-	"github.com/BrandonIrizarry/juices/internal/juicehtml"
 )
+
+var index int
 
 // PostDate serves a row consisting of the selected date, an HTML5
 // counter widget, and a Delete button. If this is an Add Date
@@ -19,19 +19,7 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	submittedDate := r.FormValue("date")
-	parts := strings.SplitN(submittedDate, "-", 2)
-
-	if len(parts) != 2 {
-		message := fmt.Sprintf("Invalid date: %s", submittedDate)
-		log.Println(message)
-		http.Error(w, message, http.StatusInternalServerError)
-		return
-	}
-
-	date := parts[1]
-
-	canonicalID, err := cid.ParseCanonicalID(r)
+	date, err := parseDate(r.FormValue("date"))
 
 	if err != nil {
 		log.Println(err)
@@ -39,23 +27,48 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	itemName := canonicalID.ItemName
-	widgetType := canonicalID.WidgetType
-	finalHTML, index, err := juicehtml.ComputeDateFinalHTML(date, itemName, widgetType)
+	itemName := r.PathValue("itemName")
 
-	if err != nil {
+	if itemName == "" {
+		err := errors.New("Missing 'itemName' path value")
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Initialize this counter element's map entry to 0.
-	juicecount.Set("count", itemName, date, index, 0)
-
-	log.Println(juicecount.Info())
-
-	_, err = w.Write([]byte(finalHTML))
+	entryHTML, err := template.New("entry").Funcs(template.FuncMap{
+		"inc": func() int {
+			index++
+			return index
+		},
+	}).ParseFiles("assets/entry.html")
 
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+
+	type dataView struct {
+		ItemName string
+		Date     string
+	}
+
+	dv := dataView{itemName, date}
+
+	if err := entryHTML.ExecuteTemplate(w, "entry", dv); err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func parseDate(dateFormValue string) (string, error) {
+	parts := strings.SplitN(dateFormValue, "-", 2)
+
+	if len(parts) != 2 {
+		return "", fmt.Errorf("Invalid date: %s", dateFormValue)
+	}
+
+	return parts[1], nil
 }

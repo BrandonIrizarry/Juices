@@ -17,6 +17,7 @@ func main() {
 	// Endpoints (each handler is defined in its own file inside
 	// the main package.
 	mux.HandleFunc("GET /date/{itemName}", getDate)
+	mux.HandleFunc("POST /date/{itemName}", postDate)
 
 	srv := &http.Server{
 		Addr:    ":8080",
@@ -24,4 +25,8 @@ func main() {
 	}
 
 	log.Fatal(srv.ListenAndServe())
+}
+
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }

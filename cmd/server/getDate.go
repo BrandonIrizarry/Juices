@@ -16,24 +16,23 @@ func getDate(w http.ResponseWriter, r *http.Request) {
 	itemName := r.PathValue("itemName")
 
 	if itemName == "" {
-		reportInternalError(w, errors.New("Missing 'itemName' path value"))
+		err := errors.New("Missing 'itemName' path value")
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	datePickerHTML, err := template.New("datepicker").ParseFiles("assets/datepicker.html")
 
 	if err != nil {
-		reportInternalError(w, err)
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if err := datePickerHTML.ExecuteTemplate(w, "datepicker", itemName); err != nil {
-		reportInternalError(w, err)
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func reportInternalError(w http.ResponseWriter, err error) {
-	log.Println(err)
-	http.Error(w, err.Error(), http.StatusInternalServerError)
 }

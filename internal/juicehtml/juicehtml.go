@@ -14,7 +14,7 @@ func createSpan(index int, itemName, date string) string {
 	CID := generateRawCanonicalID(index, "edit", itemName, date)
 
 	spanHTML := strings.TrimSpace(`
-<span name="edit" id="%s" hx-get="/date" hx-swap="outerHTML" hx-target="closest div">%s</span>
+
 `)
 
 	return fmt.Sprintf(spanHTML, CID, date)
@@ -24,7 +24,7 @@ func createCounter(index int, itemName, date string) string {
 	CID := generateRawCanonicalID(index, "count", itemName, date)
 
 	counterHTML := strings.TrimSpace(`
-<input type="number" name="count" id="%s" hx-post="/count" hx-trigger="change delay:1s" min=0 value="0" />
+
 `)
 	return fmt.Sprintf(counterHTML, CID)
 }
@@ -33,7 +33,7 @@ func createDeleteButton(index int, itemName, date string) string {
 	CID := generateRawCanonicalID(index, "delete", itemName, date)
 
 	deleteButtonHTML := strings.TrimSpace(`
-<button id="%s" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
+
 `)
 	return fmt.Sprintf(deleteButtonHTML, CID)
 }
