@@ -60,7 +60,8 @@ func undoKebabCase(itemName string) string {
 	parts := strings.Split(itemName, "-")
 
 	for i := range parts {
-		parts[i] = strings.ToUpper(parts[i])
+		subword := parts[i]
+		parts[i] = strings.ToUpper(string(subword[0])) + string(subword[1:])
 	}
 
 	return strings.Join(parts, " ")
