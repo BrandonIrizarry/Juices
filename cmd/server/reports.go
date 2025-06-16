@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+	"os"
+	"strings"
+)
+
 type itemReport struct {
 	itemName string
 	date     string
@@ -25,4 +31,37 @@ func generateReports() map[itemReport]int {
 	}
 
 	return reports
+}
+
+func writeReportsFile(reports map[itemReport]int) error {
+	f, err := os.Create("app/reports.txt")
+
+	if err != nil {
+		return err
+	}
+
+	defer f.Close()
+
+	for ir, count := range reports {
+		realItemName := undoKebabCase(ir.itemName)
+		date := ir.date
+
+		line := fmt.Sprintf("%s: %d (%s)\n", realItemName, count, date)
+
+		if _, err := f.WriteString(line); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func undoKebabCase(itemName string) string {
+	parts := strings.Split(itemName, "-")
+
+	for i := range parts {
+		parts[i] = strings.ToUpper(parts[i])
+	}
+
+	return strings.Join(parts, " ")
 }

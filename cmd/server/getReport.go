@@ -12,6 +12,12 @@ func getReport(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Reports: %v\n", reports)
 
+	if err := writeReportsFile(reports); err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	// Clear the map, since redirecting will erase all progress.
 	clear(counts)
 
