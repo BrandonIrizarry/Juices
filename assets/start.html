@@ -9,6 +9,9 @@
     <title>Juice Inventory</title>
   </head>
   <body>
+    <form action="/report" method="get">
+      <input type="submit" value="Submit" />
+    </form>
     {{ range . }}
     <section>
       <h1>{{ . }}</h1>
