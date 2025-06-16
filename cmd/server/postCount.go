@@ -47,7 +47,7 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 	e := entry{itemName, date, count}
 
 	// Use this counter's ID attribute as the map key.
-	id, err := nonEmptyValue(r.Header.Get("Hx-Trigger"))
+	id, err := strconv.Atoi(r.Header.Get("Hx-Trigger"))
 
 	if err != nil {
 		log.Println(err)
@@ -55,15 +55,7 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	idInt, err := strconv.Atoi(id)
-
-	if err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	counts[idInt] = e
+	counts[id] = e
 
 	log.Printf("Counts: %v\n", counts)
 }
