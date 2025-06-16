@@ -14,7 +14,7 @@ type entry struct {
 }
 
 // Map counter ID attributes to entry info.
-var counts = make(map[string]entry)
+var counts = make(map[int]entry)
 
 func postCount(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
@@ -55,7 +55,15 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	counts[id] = e
+	idInt, err := strconv.Atoi(id)
+
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	counts[idInt] = e
 
 	log.Printf("Counts: %v\n", counts)
 }
