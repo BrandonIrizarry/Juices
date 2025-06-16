@@ -22,6 +22,7 @@ func main() {
 	mux.HandleFunc("GET /date/{itemName}", getDate)
 	mux.HandleFunc("POST /date/{itemName}", postDate)
 	mux.HandleFunc("DELETE /date", deleteDate)
+	mux.HandleFunc("POST /count/{itemName}/{date}", postCount)
 
 	srv := &http.Server{
 		Addr:    ":8080",

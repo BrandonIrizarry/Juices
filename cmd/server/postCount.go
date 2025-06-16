@@ -1,13 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/BrandonIrizarry/juices/internal/cid"
-	"github.com/BrandonIrizarry/juices/internal/juicecount"
 )
+
+type entry struct {
+	itemName string
+	date     string
+	count    int
+}
+
+// Map counter ID attributes to entry info.
+var counts = make(map[string]entry)
 
 func postCount(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
@@ -16,15 +23,12 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 	count, err := strconv.Atoi(r.FormValue("count"))
 
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("Got count: %d\n", count)
-
-	// Record the count under the given ID (we'll accumulate
-	// counts under each date later.)
-	canonicalID, err := cid.ParseCanonicalID(r)
+	itemName, err := nonEmptyValue(r.PathValue("itemName"))
 
 	if err != nil {
 		log.Println(err)
@@ -32,7 +36,34 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	juicecount.SetBulk(canonicalID, count)
+	date, err := nonEmptyValue(r.PathValue("date"))
 
-	log.Println(juicecount.Info())
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	e := entry{itemName, date, count}
+
+	// Use this counter's ID attribute as the map key.
+	id, err := nonEmptyValue(r.Header.Get("Hx-Trigger"))
+
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	counts[id] = e
+
+	log.Printf("Counts: %v\n", counts)
+}
+
+func nonEmptyValue(value string) (string, error) {
+	if value == "" {
+		return "", fmt.Errorf("Missing '%s' from path values", value)
+	}
+
+	return value, nil
 }
