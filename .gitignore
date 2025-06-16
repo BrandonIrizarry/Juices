@@ -1,3 +1,4 @@
 tmp/
 /run.sh
 app/index.html
+/app/*.txt
