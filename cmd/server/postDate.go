@@ -2,10 +2,8 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
-	"strings"
 )
 
 // PostDate serves a row consisting of the selected date, an HTML5
@@ -53,14 +51,4 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func parseDate(dateFormValue string) (string, error) {
-	parts := strings.SplitN(dateFormValue, "-", 2)
-
-	if len(parts) != 2 {
-		return "", fmt.Errorf("Invalid date: %s", dateFormValue)
-	}
-
-	return parts[1], nil
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -58,12 +57,4 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 	counts[id] = e
 
 	log.Printf("Counts: %v\n", counts)
-}
-
-func nonEmptyValue(value string) (string, error) {
-	if value == "" {
-		return "", fmt.Errorf("Missing '%s' from path values", value)
-	}
-
-	return value, nil
 }
