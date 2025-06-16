@@ -16,6 +16,9 @@ func main() {
 	// HTMX resides)
 	serveMainPage := http.StripPrefix("/app/", http.FileServer(http.Dir("./app")))
 	mux.Handle("GET /app/", serveMainPage)
+	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/app", http.StatusSeeOther)
+	})
 
 	// Endpoints (each handler is defined in its own file inside
 	// the main package.
