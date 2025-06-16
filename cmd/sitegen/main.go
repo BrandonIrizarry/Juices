@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
 
 func main() {
@@ -15,17 +17,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	t, err := template.New("start").Funcs(template.FuncMap{
-		"kebabCase": func(name string) string {
-			subwords := strings.Fields(name)
-
-			for i := range subwords {
-				subwords[i] = strings.ToLower(subwords[i])
-			}
-
-			return strings.Join(subwords, "-")
-		},
-	}).ParseFiles("assets/start.html")
+	fnMap := template.FuncMap{"kebabCase": kebab.KebabCase}
+	t, err := template.New("start").Funcs(fnMap).ParseFiles("assets/start.html")
 
 	if err != nil {
 		log.Fatal(err)

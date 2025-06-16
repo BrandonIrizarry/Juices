@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
 
 type itemReport struct {
@@ -65,7 +67,7 @@ func writeReportsFile(headings map[string][]dateInfo) error {
 	defer f.Close()
 
 	for itemName, dis := range headings {
-		realItemName := undoKebabCase(itemName)
+		realItemName := kebab.UndoKebabCase(itemName)
 
 		if _, err := f.WriteString(realItemName + "\n" + strings.Repeat("-", len(realItemName)) + "\n"); err != nil {
 			return err
@@ -85,15 +87,4 @@ func writeReportsFile(headings map[string][]dateInfo) error {
 	}
 
 	return nil
-}
-
-func undoKebabCase(itemName string) string {
-	parts := strings.Split(itemName, "-")
-
-	for i := range parts {
-		subword := parts[i]
-		parts[i] = strings.ToUpper(string(subword[0])) + string(subword[1:])
-	}
-
-	return strings.Join(parts, " ")
 }
