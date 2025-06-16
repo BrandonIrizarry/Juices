@@ -12,7 +12,11 @@ func getReport(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Reports: %v\n", reports)
 
-	if err := writeReportsFile(reports); err != nil {
+	headings := convertToHeadings(reports)
+
+	log.Printf("Headings: %v\n", headings)
+
+	if err := writeReportsFile(headings); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

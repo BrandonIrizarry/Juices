@@ -33,7 +33,29 @@ func generateReports() map[itemReport]int {
 	return reports
 }
 
-func writeReportsFile(reports map[itemReport]int) error {
+type dateInfo struct {
+	date  string
+	count int
+}
+
+func convertToHeadings(reports map[itemReport]int) map[string][]dateInfo {
+	headings := make(map[string][]dateInfo)
+
+	for ir, count := range reports {
+		itemName := ir.itemName
+
+		if _, ok := headings[itemName]; !ok {
+			headings[itemName] = make([]dateInfo, 0)
+		}
+
+		di := dateInfo{ir.date, count}
+		headings[itemName] = append(headings[itemName], di)
+	}
+
+	return headings
+}
+
+func writeReportsFile(headings map[string][]dateInfo) error {
 	f, err := os.Create("app/reports.txt")
 
 	if err != nil {
@@ -42,13 +64,22 @@ func writeReportsFile(reports map[itemReport]int) error {
 
 	defer f.Close()
 
-	for ir, count := range reports {
-		realItemName := undoKebabCase(ir.itemName)
-		date := ir.date
+	for itemName, dis := range headings {
+		realItemName := undoKebabCase(itemName)
 
-		line := fmt.Sprintf("%s: %d (%s)\n", realItemName, count, date)
+		if _, err := f.WriteString(realItemName + "\n" + strings.Repeat("-", len(realItemName)) + "\n"); err != nil {
+			return err
+		}
 
-		if _, err := f.WriteString(line); err != nil {
+		for _, di := range dis {
+			line := fmt.Sprintf("%d (%s)\n", di.count, di.date)
+
+			if _, err := f.WriteString(line); err != nil {
+				return err
+			}
+		}
+
+		if _, err := f.WriteString("\n\n"); err != nil {
 			return err
 		}
 	}
