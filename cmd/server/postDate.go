@@ -9,8 +9,8 @@ import (
 )
 
 // PostDate serves a row consisting of the selected date, an HTML5
-// counter widget, and a Delete button. If this is an Add Date
-// operation, another Add Date button is appended to the served HTML.
+// counter widget, and a Delete button. A replacement Add Date button
+// is appended to the served HTML.
 func postDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
