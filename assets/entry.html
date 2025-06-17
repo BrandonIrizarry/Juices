@@ -2,13 +2,16 @@
 
 <div class="entry">
   <span>{{ .Date }}</span>
-  <input type="number"
-         id="{{ inc }}"
-         name="count"
-         hx-post="/count/{{ .ItemName }}/{{ .Date }}"
-         hx-trigger="change delay:1s"
-         min="0"
-         value="0" />
+  <form>
+    <input type="number"
+           name="count"
+           min="0"
+           value="0" />
+    <button id="{{ inc }}"
+            hx-post="/count/{{ .ItemName }}/{{ .Date }}"
+            hx-target="previous input"
+            hx-swap="outerHTML">Sync</button>
+  </form>
   <button id="{{ inc }}" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
 </div>
 <!-- The item name should already be in kebab case. -->

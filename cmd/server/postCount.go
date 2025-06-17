@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -17,6 +18,8 @@ var counts = make(map[int]entry)
 
 func postCount(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
+
+	w.Header().Set("Content-Type", "text/html")
 
 	// Get the count.
 	count, err := strconv.Atoi(r.FormValue("count"))
@@ -57,4 +60,7 @@ func postCount(w http.ResponseWriter, r *http.Request) {
 	counts[id] = e
 
 	log.Printf("Counts: %v\n", counts)
+
+	// Return a span of the count.
+	w.Write([]byte(fmt.Sprintf("<span>%d</span>", count)))
 }
