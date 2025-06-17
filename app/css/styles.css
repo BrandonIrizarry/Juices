@@ -13,12 +13,17 @@ section > * {
     margin-top: 10px;
 }
 
-.entry {
+.row {
     display: flex;
     justify-content: space-between;
     width: 300px;
 }
 
-.entry > input[type="number"] {
+form {
+    display: flex;
+    align-self: center;
+}
+
+form > input[type="number"] {
     width: 50px;
 }
