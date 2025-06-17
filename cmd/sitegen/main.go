@@ -18,13 +18,22 @@ func main() {
 	}
 
 	fnMap := template.FuncMap{"kebabCase": kebab.KebabCase}
-	t, err := template.New("start").Funcs(fnMap).ParseFiles("assets/start.html")
+	start, err := template.New("start").Funcs(fnMap).ParseFiles("assets/start.html")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := t.Execute(os.Stdout, items); err != nil {
+	// Write the filled-in start template to 'app/index.html'.
+	f, err := os.Create("app/index.html")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	if err := start.Execute(f, items); err != nil {
 		log.Fatal(err)
 	}
 }

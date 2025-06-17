@@ -11,8 +11,8 @@ done
 cat > run.sh <<EOF
 #!/usr/bin/env bash
 
-echo "Generating index.html from template"
-./tmp/sitegen > ./app/index.html
+echo "Generating site"
+./tmp/sitegen
 
 echo "Running server"
 ./tmp/server
