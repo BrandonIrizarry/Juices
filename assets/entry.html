@@ -10,7 +10,7 @@
              value="0" />
       <button id="{{ inc }}"
               hx-post="/count/{{ .ItemName }}/{{ .Date }}"
-              hx-target="previous input"
+              hx-target="closest form"
               hx-swap="outerHTML">Sync</button>
     </form>
     <button id="{{ inc }}" hx-delete="/date" hx-swap="delete" hx-target="closest div" hx-confirm="Delete this row?">Delete</button>
