@@ -14,8 +14,10 @@
     </form>
     {{ range . }}
     <section>
-      <h1>{{ . }}</h1>
-      <button hx-get="/date/{{ kebabCase . }}" hx-swap="outerHTML">Add Date</button>
+      <details>
+        <summary>{{ . }}</summary>
+        <button hx-get="/date/{{ kebabCase . }}" hx-swap="outerHTML">Add Date</button>
+      </details>
     </section>
     {{ end }}
   </body>
