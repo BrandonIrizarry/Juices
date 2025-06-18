@@ -1,23 +1,25 @@
 {{ define "main" }}
 
-{{ range $itemName, $counts := . }}
+<article>
+  {{ range $itemName, $counts := . }}
 
-{{ $acc := createAcc }}
+  {{ $acc := createAcc }}
 
-<div>
-  <h2>{{ undoKebabCase $itemName}}</h2>
+  <div>
+    <h2>{{ undoKebabCase $itemName}}</h2>
 
-  <ul>
-    {{ range $counts }}
-    {{ $count := call $acc .Count }}
-    <li>{{ $count.Count }} ({{ .Date }})</li>
-    {{ end }}
-  </ul>
-  <!-- $acc increments by the given count, but here we only want the total. -->
-  {{ $total := call $acc 0 }}
+    <ul>
+      {{ range $counts }}
+      {{ $count := call $acc .Count }}
+      <li>{{ $count.Count }} ({{ .Date }})</li>
+      {{ end }}
+    </ul>
+    <!-- $acc increments by the given count, but here we only want the total. -->
+    {{ $total := call $acc 0 }}
 
-  <h3>Total: {{ $total.Total }}</h3>
-</div>
-{{ end }}
+    <h3>Total: {{ $total.Total }}</h3>
+  </div>
+  {{ end }}
+</article>
 
 {{ end }}
