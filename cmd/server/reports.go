@@ -67,7 +67,11 @@ func writeReportsFile(headings map[string][]dateInfo) error {
 
 	// Prepare the report template.
 	t, err := template.New("start").Funcs(template.FuncMap{
-		"kebabCase": kebab.KebabCase,
+		// kebab.KebabCase is included here because we're
+		// reusing the start template, which contains a
+		// template block whose default definition uses this
+		// function.
+		"kebabCase":     kebab.KebabCase,
 	}).ParseFiles("assets/start.html", "assets/report.html")
 
 	if err != nil {
