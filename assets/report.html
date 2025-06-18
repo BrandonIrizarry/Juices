@@ -21,7 +21,11 @@
   </div>
   {{ end }}
 
-  <a href="report.html" download="payload.txt">Download!</a>
+  <a href="report.html"
+     download="payload.txt"
+     hx-boost="false">
+    Download!
+  </a>
 </article>
 
 {{ end }}
