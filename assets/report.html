@@ -1,10 +1,10 @@
 {{ define "main" }}
 
-{{ range $key, $value := . }}
+{{ range $itemName, $counts := . }}
 <div>
-  <h2>{{ undoKebabCase $key}}</h2>
+  <h2>{{ undoKebabCase $itemName}}</h2>
 
-  {{ range $value }}
+  {{ range $counts }}
   <p>{{ .Count }} ({{ .Date }})</p>
   {{ end }}
 
