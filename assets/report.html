@@ -21,11 +21,10 @@
   </div>
   {{ end }}
 
-  <a href="report.html"
-     download="payload.txt"
-     hx-boost="false">
-    Download!
-  </a>
+  <button hx-get="/prepare"
+          hx-swap="outerHTML">
+    Prepare Download
+  </button>
 </article>
 
 {{ end }}
