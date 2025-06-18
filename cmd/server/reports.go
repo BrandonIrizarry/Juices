@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
 	"os"
-	"strings"
 
 	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
@@ -58,32 +57,25 @@ func convertToHeadings(reports map[itemReport]int) map[string][]dateInfo {
 }
 
 func writeReportsFile(headings map[string][]dateInfo) error {
-	f, err := os.Create("app/reports.txt")
+	reportFile, err := os.OpenFile("app/report.html", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 
 	if err != nil {
 		return err
 	}
 
-	defer f.Close()
+	defer reportFile.Close()
 
-	for itemName, dis := range headings {
-		realItemName := kebab.UndoKebabCase(itemName)
+	// Prepare the report template.
+	t, err := template.New("start").Funcs(template.FuncMap{
+		"kebabCase": kebab.KebabCase,
+	}).ParseFiles("assets/start.html", "assets/report.html")
 
-		if _, err := f.WriteString(realItemName + "\n" + strings.Repeat("-", len(realItemName)) + "\n"); err != nil {
-			return err
-		}
+	if err != nil {
+		return err
+	}
 
-		for _, di := range dis {
-			line := fmt.Sprintf("%d (%s)\n", di.count, di.date)
-
-			if _, err := f.WriteString(line); err != nil {
-				return err
-			}
-		}
-
-		if _, err := f.WriteString("\n\n"); err != nil {
-			return err
-		}
+	if err := t.ExecuteTemplate(reportFile, "start", headings); err != nil {
+		return err
 	}
 
 	return nil

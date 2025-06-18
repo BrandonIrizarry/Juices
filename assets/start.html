@@ -9,6 +9,8 @@
     <title>Juice Inventory</title>
   </head>
   <body>
+    {{ block "main" . }}
+
     <form action="/report" method="get">
       <input type="submit" value="Submit" />
     </form>
@@ -19,6 +21,8 @@
         <button hx-get="/date/{{ kebabCase . }}" hx-swap="outerHTML">Add Date</button>
       </details>
     </section>
+    {{ end }}
+
     {{ end }}
   </body>
   <script src="/app/js/htmx.min.js"></script>

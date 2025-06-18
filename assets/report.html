@@ -1,0 +1,10 @@
+{{ define "main" }}
+
+{{ range $key, $value := . }}
+<div>
+  <h2>{{ $key}}</h2>
+  <p>{{ $value }}</p>
+</div>
+{{ end }}
+
+{{ end }}
