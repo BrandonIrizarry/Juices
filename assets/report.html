@@ -2,8 +2,12 @@
 
 {{ range $key, $value := . }}
 <div>
-  <h2>{{ $key}}</h2>
-  <p>{{ $value }}</p>
+  <h2>{{ undoKebabCase $key}}</h2>
+
+  {{ range $value }}
+  <p>{{ .Count }} ({{ .Date }})</p>
+  {{ end }}
+
 </div>
 {{ end }}
 

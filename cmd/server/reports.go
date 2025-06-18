@@ -35,8 +35,8 @@ func generateReports() map[itemReport]int {
 }
 
 type dateInfo struct {
-	date  string
-	count int
+	Date  string
+	Count int
 }
 
 func convertToHeadings(reports map[itemReport]int) map[string][]dateInfo {
@@ -72,6 +72,7 @@ func writeReportsFile(headings map[string][]dateInfo) error {
 		// template block whose default definition uses this
 		// function.
 		"kebabCase":     kebab.KebabCase,
+		"undoKebabCase": kebab.UndoKebabCase,
 	}).ParseFiles("assets/start.html", "assets/report.html")
 
 	if err != nil {
