@@ -15,6 +15,18 @@ section > * {
 
 .report {
     margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    background-color: cyan;
+    width: 300px;
+}
+
+.report > * {
+    margin: 10px;
+}
+
+.report-page {
+    margin-left: 50px;
 }
 
 .row {
