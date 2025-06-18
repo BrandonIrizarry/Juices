@@ -65,13 +65,21 @@ func writeReportsFile(headings map[string][]dateInfo) error {
 
 	defer reportFile.Close()
 
-	createAcc := func() func(count int) int {
-		var total int
+	type countInfo struct {
+		Count int
+		Total int
+	}
 
-		return func(count int) int {
-			total += count
+	createAcc := func() func(count int) countInfo {
+		info := countInfo{
+			Count: 0,
+			Total: 0,
+		}
 
-			return count
+		return func(count int) countInfo {
+			info = countInfo{count, info.Total + count}
+
+			return info
 		}
 	}
 

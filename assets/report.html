@@ -8,10 +8,13 @@
   <h2>{{ undoKebabCase $itemName}}</h2>
 
   {{ range $counts }}
-  <p>{{ call $acc .Count }} ({{ .Date }})</p>
+  {{ $count := call $acc .Count }}
+  <p>{{ $count.Count }} ({{ .Date }})</p>
   {{ end }}
 
 
+  {{ $total := call $acc 0 }}
+  <h3>{{ $total.Total }}</h3>
 </div>
 {{ end }}
 
