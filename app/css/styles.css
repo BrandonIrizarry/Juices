@@ -42,3 +42,9 @@ section > * {
 .sync button {
     margin-left: 20px;
 }
+
+@media print {
+    button {
+        display: none;
+    }
+}
