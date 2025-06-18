@@ -1,12 +1,16 @@
 {{ define "main" }}
 
 {{ range $itemName, $counts := . }}
+
+{{ $acc := createAcc }}
+
 <div>
   <h2>{{ undoKebabCase $itemName}}</h2>
 
   {{ range $counts }}
-  <p>{{ .Count }} ({{ .Date }})</p>
+  <p>{{ call $acc .Count }} ({{ .Date }})</p>
   {{ end }}
+
 
 </div>
 {{ end }}

@@ -65,6 +65,16 @@ func writeReportsFile(headings map[string][]dateInfo) error {
 
 	defer reportFile.Close()
 
+	createAcc := func() func(count int) int {
+		var total int
+
+		return func(count int) int {
+			total += count
+
+			return count
+		}
+	}
+
 	// Prepare the report template.
 	t, err := template.New("start").Funcs(template.FuncMap{
 		// kebab.KebabCase is included here because we're
@@ -73,6 +83,7 @@ func writeReportsFile(headings map[string][]dateInfo) error {
 		// function.
 		"kebabCase":     kebab.KebabCase,
 		"undoKebabCase": kebab.UndoKebabCase,
+		"createAcc":     createAcc,
 	}).ParseFiles("assets/start.html", "assets/report.html")
 
 	if err != nil {
