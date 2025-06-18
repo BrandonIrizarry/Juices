@@ -22,9 +22,12 @@
   {{ end }}
 
   <button hx-get="/prepare"
-          hx-swap="outerHTML">
+          hx-swap="outerHTML"
+          hx-indicator="#spinner">
     Prepare Download
   </button>
+
+  <img id="spinner" class="htmx-indicator" src="bars.svg" />
 </article>
 
 {{ end }}
