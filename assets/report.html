@@ -14,7 +14,8 @@
 
   <!-- $acc increments by the given count, but here we only want the total. -->
   {{ $total := call $acc 0 }}
-  <h3>{{ $total.Total }}</h3>
+
+  <h3>Total: {{ $total.Total }}</h3>
 </div>
 {{ end }}
 
