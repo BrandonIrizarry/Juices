@@ -22,8 +22,5 @@ func getReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Clear the map, since redirecting will erase all progress.
-	clear(counts)
-
 	http.Redirect(w, r, "/app/report.html", http.StatusSeeOther)
 }
