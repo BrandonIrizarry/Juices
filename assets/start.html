@@ -11,9 +11,17 @@
   <body>
     {{ block "view" . }}
 
-    <form action="/report" method="get">
-      <input type="submit" value="Submit" />
-    </form>
+    <div class="row">
+      <form action="/report" method="get">
+        <input type="submit" value="Submit" />
+      </form>
+
+      <button hx-post="/clear"
+              hx-target=".entry"
+              hx-swap="delete"
+              hx-confirm="This will clear you current counts. Proceed?">Clear Counts</button>
+    </div>
+
     {{ range . }}
     <section>
       <details>
