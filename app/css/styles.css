@@ -18,7 +18,12 @@ section > * {
     display: flex;
     flex-direction: column;
     background-color: cyan;
-    width: 300px;
+    width: 700px;
+    font-size: 3em;
+}
+
+.line {
+    font-weight: bold;
 }
 
 .report > * {

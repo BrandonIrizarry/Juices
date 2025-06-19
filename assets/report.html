@@ -11,7 +11,7 @@
     <ul>
       {{ range $counts }}
       {{ $count := call $acc .Count }}
-      <li>{{ $count.Count }} ({{ .Date }})</li>
+      <li class="line">{{ $count.Count }} ({{ .Date }})</li>
       {{ end }}
     </ul>
     <!-- $acc increments by the given count, but here we only want the total. -->
