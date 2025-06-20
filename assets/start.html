@@ -23,6 +23,8 @@
     </section>
     {{ end }}
 
+    <button hx-delete="/entries" hx-on:click="location.reload()">Reset Counts</button>
+
     {{ end }}
   </body>
   <script src="/app/js/htmx.min.js"></script>
