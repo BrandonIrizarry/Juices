@@ -52,7 +52,17 @@ throwaway report on the fly.
 - Improve spacing between UI elements
 - Organize items under categories (e.g. **Cold Pressed Juices**,
   **Kombuchas**)
-- Maybe add an option to clear all current counts
+- ~~Maybe add an option to clear all current counts~~
 - Add progress indicator for downloading PDF
 - Improve CSS for PDF generation indicator widget
 - Add CD
+- Check whether we should make certain endpoints forbidden
+- Add screenshots
+- Tidy the app's build steps and add an Installation section
+- Containerization
+- Fix a "stale" `counts` map
+
+  The user currently has to check manually (clicking `Submit`) whether
+  `counts` is populated from a previous session. A possible fix is to
+  make the user begin a session by clicking a button to enter the
+  page. This possibly necessitates getting rid of the "sitegen" step.
