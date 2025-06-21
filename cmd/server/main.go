@@ -1,16 +1,56 @@
 package main
 
 import (
+	"bufio"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
+	"strings"
+
+	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
 
 var entryWithIndex func() (*template.Template, error)
 
+type config struct {
+	views map[string]*template.Template
+}
+
 func main() {
 	// Set up server.
 	mux := http.NewServeMux()
+
+	// Define the main view (dashboard).
+	cfg := config{make(map[string]*template.Template)}
+
+	start, err := template.New("start").Funcs(template.FuncMap{
+		"kebabCase": kebab.KebabCase,
+	}).ParseFiles("assets/start.html")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cfg.views["start"] = start
+
+	indexHTML, err := os.OpenFile("app/index.html", os.O_RDWR, 0644)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	items, err := inventoryItems()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := start.ExecuteTemplate(indexHTML, "start", items); err != nil {
+		log.Fatal(err)
+	}
+
+	indexHTML.Close()
 
 	// Serve page as a static asset (includes CSS and JS, where
 	// HTMX resides)
@@ -55,6 +95,33 @@ func initEntryWithIndex() func() (*template.Template, error) {
 
 		return entryHTML, nil
 	}
+}
+
+func inventoryItems() ([]string, error) {
+	file, err := os.Open("assets/inventory.txt")
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	buffer := make([]string, 0)
+
+	for scanner.Scan() {
+		item := strings.TrimSpace(scanner.Text())
+
+		if item != "" {
+			buffer = append(buffer, item)
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return buffer, nil
 }
 
 func init() {
