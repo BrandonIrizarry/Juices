@@ -7,15 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
-
-var entryWithIndex = initEntryWithIndex()
-
-type config struct {
-	views map[string]*template.Template
-}
 
 func main() {
 	// Set up server.
@@ -24,6 +16,10 @@ func main() {
 	var cfg config
 
 	if err := cfg.initViews(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := cfg.initEntryWithIndex(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -51,7 +47,7 @@ func main() {
 	mux.HandleFunc("POST /date/{itemName}", cfg.postDate)
 	mux.HandleFunc("DELETE /date", deleteDate)
 	mux.HandleFunc("POST /count/{itemName}/{date}", postCount)
-	mux.HandleFunc("GET /report", getReport)
+	mux.HandleFunc("GET /report", cfg.getReport)
 	mux.HandleFunc("GET /prepare", getPrepare)
 	mux.HandleFunc("DELETE /entries", deleteEntries)
 
@@ -61,25 +57,6 @@ func main() {
 	}
 
 	log.Fatal(srv.ListenAndServe())
-}
-
-func initEntryWithIndex() func() (*template.Template, error) {
-	var index int
-
-	return func() (*template.Template, error) {
-		entryHTML, err := template.New("entry").Funcs(template.FuncMap{
-			"inc": func() int {
-				index++
-				return index
-			},
-		}).ParseFiles("assets/entry.html")
-
-		if err != nil {
-			return nil, err
-		}
-
-		return entryHTML, nil
-	}
 }
 
 func inventoryItems() ([]string, error) {
@@ -121,23 +98,6 @@ func initIndexHTML(start *template.Template, items []string) error {
 	if err := start.ExecuteTemplate(indexHTML, "start", items); err != nil {
 		return err
 	}
-
-	return nil
-}
-
-func (cfg *config) initViews() error {
-	// Define the main view (dashboard).
-	*cfg = config{make(map[string]*template.Template)}
-
-	start, err := template.New("start").Funcs(template.FuncMap{
-		"kebabCase": kebab.KebabCase,
-	}).ParseFiles("assets/start.html")
-
-	if err != nil {
-		return err
-	}
-
-	cfg.views["start"] = start
 
 	return nil
 }

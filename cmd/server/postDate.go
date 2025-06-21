@@ -29,7 +29,7 @@ func (cfg *config) postDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	entryHTML, err := entryWithIndex()
+	entryHTML, err := cfg.generateEntry()
 
 	if err != nil {
 		log.Println(err)
