@@ -1,4 +1,3 @@
-tmp/
-/run.sh
 app/*.html
 *.pdf
+/server
