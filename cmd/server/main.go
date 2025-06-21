@@ -7,15 +7,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
 
 var entryWithIndex func() (*template.Template, error)
-
-type config struct {
-	views map[string]*template.Template
-}
 
 func main() {
 	// Set up server.
@@ -119,23 +113,6 @@ func initIndexHTML(start *template.Template, items []string) error {
 	if err := start.ExecuteTemplate(indexHTML, "start", items); err != nil {
 		return err
 	}
-
-	return nil
-}
-
-func (cfg *config) initViews() error {
-	// Define the main view (dashboard).
-	*cfg = config{make(map[string]*template.Template)}
-
-	start, err := template.New("start").Funcs(template.FuncMap{
-		"kebabCase": kebab.KebabCase,
-	}).ParseFiles("assets/start.html")
-
-	if err != nil {
-		return err
-	}
-
-	cfg.views["start"] = start
 
 	return nil
 }
