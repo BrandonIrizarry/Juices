@@ -43,7 +43,7 @@ func main() {
 	mux.HandleFunc("POST /date/{itemName}", postDate)
 	mux.HandleFunc("DELETE /date", deleteDate)
 	mux.HandleFunc("POST /count/{itemName}/{date}", postCount)
-	mux.HandleFunc("GET /report", getReport)
+	mux.HandleFunc("GET /report", cfg.getReport)
 	mux.HandleFunc("GET /prepare", getPrepare)
 	mux.HandleFunc("DELETE /entries", deleteEntries)
 

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func getReport(w http.ResponseWriter, r *http.Request) {
+func (cfg *config) getReport(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
 	reports := generateReports()
@@ -16,7 +16,7 @@ func getReport(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Headings: %v\n", headings)
 
-	if err := writeReportsFile(headings); err != nil {
+	if err := writeReportsFile(cfg.views["report"], headings); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

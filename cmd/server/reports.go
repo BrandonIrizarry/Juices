@@ -3,8 +3,6 @@ package main
 import (
 	"html/template"
 	"os"
-
-	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
 
 type itemReport struct {
@@ -56,7 +54,7 @@ func convertToHeadings(reports map[itemReport]int) map[string][]dateInfo {
 	return headings
 }
 
-func writeReportsFile(headings map[string][]dateInfo) error {
+func writeReportsFile(reportTemplate *template.Template, headings map[string][]dateInfo) error {
 	reportFile, err := os.OpenFile("app/report.html", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 
 	if err != nil {
@@ -65,40 +63,7 @@ func writeReportsFile(headings map[string][]dateInfo) error {
 
 	defer reportFile.Close()
 
-	type countInfo struct {
-		Count int
-		Total int
-	}
-
-	createAcc := func() func(count int) countInfo {
-		info := countInfo{
-			Count: 0,
-			Total: 0,
-		}
-
-		return func(count int) countInfo {
-			info = countInfo{count, info.Total + count}
-
-			return info
-		}
-	}
-
-	// Prepare the report template.
-	t, err := template.New("start").Funcs(template.FuncMap{
-		// kebab.KebabCase is included here because we're
-		// reusing the start template, which contains a
-		// template block whose default definition uses this
-		// function.
-		"kebabCase":     kebab.KebabCase,
-		"undoKebabCase": kebab.UndoKebabCase,
-		"createAcc":     createAcc,
-	}).ParseFiles("assets/start.html", "assets/report.html")
-
-	if err != nil {
-		return err
-	}
-
-	if err := t.ExecuteTemplate(reportFile, "start", headings); err != nil {
+	if err := reportTemplate.ExecuteTemplate(reportFile, "start", headings); err != nil {
 		return err
 	}
 
