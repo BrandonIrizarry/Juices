@@ -21,24 +21,9 @@ func main() {
 	// Set up server.
 	mux := http.NewServeMux()
 
-	// Define the main view (dashboard).
-	cfg := config{make(map[string]*template.Template)}
+	var cfg config
 
-	start, err := template.New("start").Funcs(template.FuncMap{
-		"kebabCase": kebab.KebabCase,
-	}).ParseFiles("assets/start.html")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	cfg.views["start"] = start
-
-	indexHTML, err := os.OpenFile("app/index.html", os.O_RDWR, 0644)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	cfg.initViews()
 
 	items, err := inventoryItems()
 
@@ -46,11 +31,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := start.ExecuteTemplate(indexHTML, "start", items); err != nil {
+	if err := initIndexHTML(cfg.views["start"], items); err != nil {
 		log.Fatal(err)
 	}
-
-	indexHTML.Close()
 
 	// Serve page as a static asset (includes CSS and JS, where
 	// HTMX resides)
@@ -122,6 +105,39 @@ func inventoryItems() ([]string, error) {
 	}
 
 	return buffer, nil
+}
+
+func initIndexHTML(start *template.Template, items []string) error {
+	indexHTML, err := os.OpenFile("app/index.html", os.O_RDWR, 0644)
+
+	if err != nil {
+		return err
+	}
+
+	defer indexHTML.Close()
+
+	if err := start.ExecuteTemplate(indexHTML, "start", items); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (cfg *config) initViews() error {
+	// Define the main view (dashboard).
+	*cfg = config{make(map[string]*template.Template)}
+
+	start, err := template.New("start").Funcs(template.FuncMap{
+		"kebabCase": kebab.KebabCase,
+	}).ParseFiles("assets/start.html")
+
+	if err != nil {
+		return err
+	}
+
+	cfg.views["start"] = start
+
+	return nil
 }
 
 func init() {
