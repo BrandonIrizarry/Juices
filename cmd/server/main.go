@@ -60,6 +60,7 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
+// Map an item name to the category it belongs to.
 var categories = make(map[string]string)
 var registeredCategories = make(map[string]bool)
 
