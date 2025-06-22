@@ -11,7 +11,7 @@ import (
 	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
 
-var entryWithIndex func() (*template.Template, error)
+var entryWithIndex = initEntryWithIndex()
 
 type config struct {
 	views map[string]*template.Template
@@ -126,5 +126,4 @@ func inventoryItems() ([]string, error) {
 
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	entryWithIndex = initEntryWithIndex()
 }
