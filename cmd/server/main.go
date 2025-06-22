@@ -86,6 +86,8 @@ func inventoryItems() ([]string, error) {
 	return buffer, nil
 }
 
+// initIndexHTML copies the start template to 'app/index.html', so
+// that the file server can pick it up.
 func initIndexHTML(start *template.Template, items []string) error {
 	indexHTML, err := os.OpenFile("app/index.html", os.O_RDWR, 0644)
 
