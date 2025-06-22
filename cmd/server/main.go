@@ -61,6 +61,7 @@ func main() {
 }
 
 var categories = make(map[string]string)
+var registeredCategories = make(map[string]bool)
 
 func inventoryItems() ([]string, error) {
 	file, err := os.Open("assets/inventory.txt")
@@ -82,6 +83,12 @@ func inventoryItems() ([]string, error) {
 		if strings.HasPrefix(line, "*") {
 			// The line is a category.
 			category = strings.TrimSpace(line[1:])
+
+			if _, ok := registeredCategories[category]; ok {
+				log.Printf("Warning: category %s is already used", category)
+			} else {
+				registeredCategories[category] = true
+			}
 		} else if line != "" {
 			// The line is an item.
 			if category == "" {
@@ -97,7 +104,8 @@ func inventoryItems() ([]string, error) {
 		return nil, err
 	}
 
-	log.Printf("Categories: %v\n", categories)
+	log.Printf("Items under categories: %v\n", categories)
+	log.Printf("Registered categories: %v\n", registeredCategories)
 	return buffer, nil
 }
 
