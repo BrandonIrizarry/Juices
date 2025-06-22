@@ -63,7 +63,7 @@ func writeReportsFile(reportTemplate *template.Template, headings map[string][]d
 
 	defer reportFile.Close()
 
-	if err := reportTemplate.ExecuteTemplate(reportFile, "start", headings); err != nil {
+	if err := reportTemplate.Execute(reportFile, headings); err != nil {
 		return err
 	}
 

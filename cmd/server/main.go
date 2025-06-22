@@ -97,7 +97,7 @@ func initIndexHTML(start *template.Template, items []string) error {
 
 	defer indexHTML.Close()
 
-	if err := start.ExecuteTemplate(indexHTML, "start", items); err != nil {
+	if err := start.Execute(indexHTML, items); err != nil {
 		return err
 	}
 

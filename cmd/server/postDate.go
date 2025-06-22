@@ -44,7 +44,7 @@ func (cfg *config) postDate(w http.ResponseWriter, r *http.Request) {
 
 	dv := dataView{itemName, date}
 
-	if err := entryHTML.ExecuteTemplate(w, "entry", dv); err != nil {
+	if err := entryHTML.Execute(w, dv); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

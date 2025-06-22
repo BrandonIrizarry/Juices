@@ -30,7 +30,7 @@ func getDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := datePickerHTML.ExecuteTemplate(w, "datepicker", itemName); err != nil {
+	if err := datePickerHTML.Execute(w, itemName); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
