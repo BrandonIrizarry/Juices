@@ -23,7 +23,9 @@ func main() {
 
 	var cfg config
 
-	cfg.initViews()
+	if err := cfg.initViews(); err != nil {
+		log.Fatal(err)
+	}
 
 	items, err := inventoryItems()
 
