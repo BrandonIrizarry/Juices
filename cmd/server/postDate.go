@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"net/http"
 )
@@ -22,10 +21,9 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	itemName := r.PathValue("itemName")
+	itemName, err := nonEmptyValue(r.PathValue("itemName"))
 
-	if itemName == "" {
-		err := errors.New("Missing 'itemName' path value")
+	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
