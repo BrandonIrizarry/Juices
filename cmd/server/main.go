@@ -62,7 +62,12 @@ func main() {
 
 // Map an item name to the category it belongs to.
 var categories = make(map[string]string)
-var registeredCategories = make(map[string]bool)
+
+// Record the categories defined by the author of 'inventory.txt'. A
+// slice is used because we want to preserve the general order in
+// which the categories appear, even though we might not care how
+// items are ordered inside a given category.
+var registeredCategories = make([]string, 0)
 
 func inventoryItems() ([]string, error) {
 	file, err := os.Open("assets/inventory.txt")
@@ -84,12 +89,7 @@ func inventoryItems() ([]string, error) {
 		if strings.HasPrefix(line, "*") {
 			// The line is a category.
 			category = strings.TrimSpace(line[1:])
-
-			if _, ok := registeredCategories[category]; ok {
-				log.Printf("Warning: category %s is already used", category)
-			} else {
-				registeredCategories[category] = true
-			}
+			registeredCategories = append(registeredCategories, category)
 		} else if line != "" {
 			// The line is an item.
 			if category == "" {
