@@ -63,7 +63,7 @@ func main() {
 	// Endpoints (each handler is defined in its own file inside
 	// the main package.
 	mux.HandleFunc("GET /date/{itemName}", getDate)
-	mux.HandleFunc("POST /date/{itemName}", postDate)
+	mux.HandleFunc("POST /date/{itemName}", cfg.postDate)
 	mux.HandleFunc("DELETE /date", deleteDate)
 	mux.HandleFunc("POST /count/{itemName}/{date}", postCount)
 	mux.HandleFunc("GET /report", getReport)
