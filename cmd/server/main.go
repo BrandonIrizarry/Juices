@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
@@ -59,6 +60,8 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
+var categories = make(map[string]string)
+
 func inventoryItems() ([]string, error) {
 	file, err := os.Open("assets/inventory.txt")
 
@@ -71,11 +74,22 @@ func inventoryItems() ([]string, error) {
 	scanner := bufio.NewScanner(file)
 	buffer := make([]string, 0)
 
-	for scanner.Scan() {
-		item := strings.TrimSpace(scanner.Text())
+	var category string
 
-		if item != "" {
-			buffer = append(buffer, item)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+
+		if strings.HasPrefix(line, "*") {
+			// The line is a category.
+			category = strings.TrimSpace(line[1:])
+		} else if line != "" {
+			// The line is an item.
+			if category == "" {
+				return nil, errors.New("Current category is unset")
+			}
+
+			categories[line] = category
+			buffer = append(buffer, line)
 		}
 	}
 
@@ -83,6 +97,7 @@ func inventoryItems() ([]string, error) {
 		return nil, err
 	}
 
+	log.Printf("Categories: %v\n", categories)
 	return buffer, nil
 }
 
