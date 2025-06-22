@@ -78,8 +78,10 @@ type countInfo struct {
 	Total int
 }
 
-// FIXME: can we handle the closure update from this file, instead of
-// from within the template (as we do with "inc")?
+// createAcc is used within reports.html to create an accumulator
+// function for each item looped over by 'range' inside the template.
+// Hence, for now it's helpful to call this higher order function from
+// within the template itself.
 func createAcc() func(count int) countInfo {
 	info := countInfo{
 		Count: 0,
