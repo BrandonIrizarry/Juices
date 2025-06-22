@@ -25,7 +25,7 @@ func generateReports() map[itemReport]int {
 
 		ir := itemReport{itemName, date}
 
-		// If the item+date combination exists in the map, add
+		// If the item-with-date combination exists in the map, add
 		// to the existing count there; else, start a new
 		// entry.
 		_, ok := reports[ir]
@@ -47,7 +47,7 @@ type dateInfo struct {
 
 // convertToHeadings creates the final view model used by the
 // report.html template, where each item is grouped with the
-// date+count combinations associated with it.
+// date-with-count combinations associated with it.
 func convertToHeadings(reports map[itemReport]int) map[string][]dateInfo {
 	headings := make(map[string][]dateInfo)
 
