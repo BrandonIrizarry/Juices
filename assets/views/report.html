@@ -4,7 +4,7 @@
 {{ range $category, $reports := . }}
 <article class="report-section">
   <article>
-    <h1>{{ $category }}</h1>
+    <h1 class="category-header">{{ $category }}</h1>
 
     {{ range $itemName, $counts := $reports }}
 

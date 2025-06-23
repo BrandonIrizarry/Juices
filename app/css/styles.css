@@ -3,6 +3,10 @@ h1, h2 {
     margin: 0px;
 }
 
+.category-header {
+    text-align: center;
+}
+
 section {
     display: flex;
     flex-direction: column;
