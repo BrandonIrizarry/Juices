@@ -79,6 +79,8 @@ func inventoryItems() ([]string, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+
+	// The return value, used to fill in the start.html template.
 	buffer := make([]string, 0)
 
 	var category string
