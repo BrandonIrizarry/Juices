@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/BrandonIrizarry/juices/internal/kebab"
 )
 
 func main() {
@@ -107,8 +109,9 @@ func inventoryItems() ([]string, error) {
 				return nil, fmt.Errorf("Undefined category: %s", category)
 			}
 
-			categories[item] = category
-			registeredCategories[category] = append(registeredCategories[category], item)
+			itemAsKebab := kebab.KebabCase(item)
+			categories[itemAsKebab] = category
+			registeredCategories[category] = append(registeredCategories[category], itemAsKebab)
 
 			buffer = append(buffer, item)
 		}
