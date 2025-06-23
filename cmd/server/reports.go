@@ -61,12 +61,14 @@ func convertToHeadings(reports map[string]map[itemReport]int) map[string]map[str
 	headings := make(map[string]map[string][]dateInfo)
 
 	for category, inner := range reports {
+		log.Printf("Category: %v; inner: %v\n", category, inner)
+
 		headings[category] = make(map[string][]dateInfo)
 
 		for ir, count := range inner {
 			itemName := ir.itemName
 
-			if _, ok := headings[itemName]; !ok {
+			if _, ok := headings[category][itemName]; !ok {
 				headings[category][itemName] = make([]dateInfo, 0)
 			}
 
