@@ -32,7 +32,7 @@ section > * {
 .report-page {
     font-size: 1em;
     margin-left: 50px;
-    display: inline-block;
+    display: flex;
 }
 
 .report-section {
