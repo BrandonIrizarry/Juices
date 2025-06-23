@@ -64,6 +64,7 @@ func main() {
 // Map an item name to the category it belongs to.
 var categories = make(map[string]string)
 var registeredCategories = make(map[string][]string)
+var categoryOrder = make(map[string]int)
 
 func inventoryItems() ([]string, error) {
 	file, err := os.Open("assets/inventory.txt")
@@ -80,6 +81,7 @@ func inventoryItems() ([]string, error) {
 	buffer := make([]string, 0)
 
 	var category string
+	var categoryIndex int
 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
@@ -87,14 +89,13 @@ func inventoryItems() ([]string, error) {
 		if strings.HasPrefix(line, "*") {
 			// The line is a category.
 			category = strings.TrimSpace(line[1:])
-<<<<<<< HEAD
-			registeredCategories = append(registeredCategories, category)
-=======
 
 			if registeredCategories[category] == nil {
 				registeredCategories[category] = make([]string, 0)
 			}
->>>>>>> 6cb3e59 (feat: make 'registeredCategories' include all items under category)
+
+			categoryIndex++
+			categoryOrder[category] = categoryIndex
 		} else if line != "" {
 			// The line is an item; use a new variable for
 			// readability.
@@ -119,6 +120,7 @@ func inventoryItems() ([]string, error) {
 
 	log.Printf("Items under categories: %v\n", categories)
 	log.Printf("Registered categories: %v\n", registeredCategories)
+	log.Printf("Order of categories: %v\n", categoryOrder)
 	return buffer, nil
 }
 
