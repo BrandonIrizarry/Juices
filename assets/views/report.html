@@ -1,0 +1,40 @@
+{{ define "view" }}
+
+<main class="report-page">
+{{ range $category, $reports := . }}
+<article class="report-section">
+  <article>
+    <h1 class="category-header">{{ $category }}</h1>
+
+    {{ range $itemName, $counts := $reports }}
+
+    {{ $acc := createAcc }}
+
+    <div class="report">
+      <h2>{{ undoKebabCase $itemName}}</h2>
+
+      <ul>
+        {{ range $counts }}
+        {{ $count := call $acc .Count }}
+        <li class="line">{{ $count.Count }} ({{ .Date }})</li>
+        {{ end }}
+      </ul>
+      <!-- $acc increments by the given count, but here we only want the total. -->
+      {{ $total := call $acc 0 }}
+
+      <h3>Total: {{ $total.Total }}</h3>
+    </div>
+    {{ end }}
+  </article>
+</article>
+{{ end }}
+
+<button hx-get="/prepare"
+        hx-swap="outerHTML"
+        hx-indicator="#spinner">
+  Prepare Download
+</button>
+
+<img id="spinner" class="htmx-indicator" src="bars.svg" />
+</main>
+{{ end }}

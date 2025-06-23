@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"net/http"
 )
@@ -9,7 +8,7 @@ import (
 // PostDate serves a row consisting of the selected date, an HTML5
 // counter widget, and a Delete button. A replacement Add Date button
 // is appended to the served HTML.
-func postDate(w http.ResponseWriter, r *http.Request) {
+func (cfg *config) postDate(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Serving %s %s\n", r.Method, r.URL.Path)
 
 	w.Header().Set("Content-Type", "text/html")
@@ -22,16 +21,15 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	itemName := r.PathValue("itemName")
+	itemName, err := nonEmptyValue(r.PathValue("itemName"))
 
-	if itemName == "" {
-		err := errors.New("Missing 'itemName' path value")
+	if err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	entryHTML, err := entryWithIndex()
+	entryHTML, err := cfg.generateEntry()
 
 	if err != nil {
 		log.Println(err)
@@ -46,7 +44,7 @@ func postDate(w http.ResponseWriter, r *http.Request) {
 
 	dv := dataView{itemName, date}
 
-	if err := entryHTML.ExecuteTemplate(w, "entry", dv); err != nil {
+	if err := entryHTML.Execute(w, dv); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

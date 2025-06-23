@@ -1,5 +1,10 @@
-h2 {
+h1, h2 {
     text-decoration: underline;
+    margin: 0px;
+}
+
+.category-header {
+    text-align: center;
 }
 
 section {
@@ -14,12 +19,10 @@ section > * {
 }
 
 .report {
-    margin-top: 50px;
     display: flex;
     flex-direction: column;
     background-color: cyan;
-    width: 700px;
-    font-size: 3em;
+    width: auto;
 }
 
 .line {
@@ -31,8 +34,15 @@ section > * {
 }
 
 .report-page {
+    font-size: 1em;
     margin-left: 50px;
+    display: flex;
 }
+
+.report-section {
+    background-color: lightgrey;
+    border: thick double red;
+  }
 
 .row {
     display: flex;

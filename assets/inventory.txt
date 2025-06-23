@@ -1,5 +1,8 @@
+* Shots
 Elderberry Shot
 Ginger Bomb
+
+* Juices
 Blue Mermaid Wave
 Wellness Warrior
 Green Barrel
@@ -7,11 +10,11 @@ Orange Surf Quencher
 Daylight Detox
 Watermelon Refresh
 
-Cayenne Cleanse Kombucha
-Pink Lady Apple Kombucha
-Ginger Lemon Kombucha
-Pomegranate Blueberry Kombucha
-Tropical Pineapple Kombucha
-Mint Limeade Kombucha
-Watermelon Kombucha
-
+* Kombuchas
+Cayenne Cleanse
+Pink Lady Apple
+Ginger Lemon
+Pomegranate Blueberry
+Tropical Pineapple
+Mint Limeade
+Watermelon
