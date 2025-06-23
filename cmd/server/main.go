@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -62,12 +63,7 @@ func main() {
 
 // Map an item name to the category it belongs to.
 var categories = make(map[string]string)
-
-// Record the categories defined by the author of 'inventory.txt'. A
-// slice is used because we want to preserve the general order in
-// which the categories appear, even though we might not care how
-// items are ordered inside a given category.
-var registeredCategories = make([]string, 0)
+var registeredCategories = make(map[string][]string)
 
 func inventoryItems() ([]string, error) {
 	file, err := os.Open("assets/inventory.txt")
@@ -91,15 +87,29 @@ func inventoryItems() ([]string, error) {
 		if strings.HasPrefix(line, "*") {
 			// The line is a category.
 			category = strings.TrimSpace(line[1:])
+<<<<<<< HEAD
 			registeredCategories = append(registeredCategories, category)
+=======
+
+			if registeredCategories[category] == nil {
+				registeredCategories[category] = make([]string, 0)
+			}
+>>>>>>> 6cb3e59 (feat: make 'registeredCategories' include all items under category)
 		} else if line != "" {
-			// The line is an item.
+			// The line is an item; use a new variable for
+			// readability.
+			item := line
+
 			if category == "" {
 				return nil, errors.New("Current category is unset")
+			} else if registeredCategories[category] == nil {
+				return nil, fmt.Errorf("Undefined category: %s", category)
 			}
 
-			categories[line] = category
-			buffer = append(buffer, line)
+			categories[item] = category
+			registeredCategories[category] = append(registeredCategories[category], item)
+
+			buffer = append(buffer, item)
 		}
 	}
 
