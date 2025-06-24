@@ -2,14 +2,18 @@
 
 ## Introduction
 
-![Dashboard](./screenshots/dashboard.png)
-
-![Report](./screenshots/report.png)
-
 This is an app I wrote to help with inventory duties at the juice bar
-[where I work currently](https://playabowls.com). Items are counted,
-and then a PDF report is generated and downloaded for further
-distribution.
+[where I work currently](https://playabowls.com). Items are counted
+from a dashboard GUI, and then the user can generate and download a
+PDF report for further distribution.
+
+Some screenshots:
+
+- Dashboard for Counting Items:
+<img src="./screenshots/dashboard.png" alt="Dashboard" width="50%" height="50%">
+
+- Generated PDF of Inventory Report:
+<img src="./screenshots/report.png" alt="Report" width="50%" height="50%">
 
 Currently, it's available at [my
 website](https://brandonirizarry.xyz).
@@ -24,7 +28,33 @@ to expire soon.
 However, the inventory definition itself is by design modular and
 easily editable and extensible.
 
-## HOWTO
+## Installation
+
+### Prerequisites
+
+- Go 1.24+
+- `wkhtmltopdf` for generating the report
+- A web browser with JavaScript enabled
+
+The HTMX library, while techincally also a requirement, doesn't need
+to be installed separately, since it's bundled with the repo.
+
+### Bare Metal Build
+
+In a Bash shell, run the following:
+
+1. `git clone https://github.com/BrandonIrizarry/Juices`
+2. `cd Juices`
+3. `go build ./cmd/server`
+4. `./server`
+
+The page will then be available  at `localhost:8080`. Port 8080 is the
+default, though  this can be configured  using the `-p` switch  to the
+server command. For example, to host the site at port 8100, do:
+
+`./server -p 8100`
+
+## Usage
 
 Click on a product name to expand it. Then click the `Add Date` button
 to add a date for that product. Use the supplied counter widget to
