@@ -2,6 +2,10 @@
 
 ## Introduction
 
+![Dashboard](./screenshots/dashboard.png)
+
+![Report](./screenshots/report.png)
+
 This is an app I wrote to help with inventory duties at the juice bar
 [where I work currently](https://playabowls.com). Items are counted,
 and then a PDF report is generated and downloaded for further
