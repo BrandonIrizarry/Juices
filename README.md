@@ -15,7 +15,7 @@ Some screenshots:
 - Generated PDF of Inventory Report:
 <img src="./screenshots/report.png" alt="Report" width="50%" height="50%">
 
-Currently, it's available at [my
+Currently, the app is available for use at [my
 website](https://brandonirizarry.xyz).
 
 The items in question are hardcoded according to where I work. They're
