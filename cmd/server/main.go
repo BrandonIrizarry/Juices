@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"errors"
+	"flag"
 	"fmt"
 	"html/template"
 	"log"
@@ -14,6 +15,9 @@ import (
 )
 
 func main() {
+	port := flag.String("p", "8080", "port to serve on")
+	flag.Parse()
+
 	// Set up server.
 	mux := http.NewServeMux()
 
@@ -56,7 +60,7 @@ func main() {
 	mux.HandleFunc("POST /clear", postClear)
 
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":" + *port,
 		Handler: mux,
 	}
 
